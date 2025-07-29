@@ -93,14 +93,14 @@ Terminal should show:
 
 ✅ Connected to SQL Server!
 🚀 Server running on http://localhost:3000
-
+---
 ### 5. Open Frontend
 Open frontend/index.html in a browser
 
 Make sure your backend is running
 
 Test UI and backend flow!
-
-###⭐️ Acknowledgments
+---
+### ⭐️ Acknowledgments
 Special thanks to our DBMS instructor and teammates for collaborative effort throughout this project!
 
