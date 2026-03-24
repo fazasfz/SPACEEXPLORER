@@ -1,8 +1,15 @@
-# 🚀 SpaceExplorer — Full Stack Project
+# 🚀 Legacy Version (V1)
+
+This was the initial version of SpaceExplorer built with:
+- frontend
+- Node.js backend
+- Microsoft SQL Server
+
+This version is preserved for reference.
 
 **SpaceExplorer** is a full-stack space mission management system built using:
 
-- 🖥️ **Frontend**: React
+- 🖥️ **Frontend**: html,css, javascript
 - 🔧 **Backend**: Node.js + Express
 - 🗄️ **Database**: Microsoft SQL Server
 
@@ -10,10 +17,15 @@ It allows adding, searching, and managing astronauts, missions, and space discov
 
 ## 📁 Project Structure
 SpaceExplorer/
-├── frontend/ # React-based user interface
+├── frontend/ #
+│ ├── index.html
+│ └── styles.css
+│ └── script.js  
 ├── backend/ # Express.js server & API routes
 │ ├── db.js # SQL Server configuration
 │ └── server.js # Main backend logic
+├── database/ 
+│ ├── SpaceExplorerDB.sql
 └── README.md
 
 ---
@@ -47,59 +59,10 @@ SpaceExplorer/
 
 | Layer      | Technology                |
 |------------|---------------------------|
-| Frontend   | React, HTML, CSS, JS      |
+| Frontend   |  HTML, CSS, JS      |
 | Backend    | Node.js, Express          |
 | Database   | Microsoft SQL Server      |
 | Other      | CORS, Axios, mssql        |
 
 
-## 🧪 How to Run Locally
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/yourusername/space-explorer.git
-cd SpaceExplorer
-```
-### 2. Set up the Database
-Use Microsoft SQL Server Management Studio (SSMS).
-
-Run the provided SQL script to create SpaceExplorerDB and its tables.
-
-Enable TCP/IP and ensure SQL Server Browser is running.
-
-### 3. Configure Backend
-Inside /backend/db.js, update:
-
-const config = {
-  user: 'your_username',
-  password: 'your_password',
-  server: 'localhost',
-  database: 'SpaceExplorerDB',
-  options: {
-    instanceName: 'SQLEXPRESS',
-    encrypt: false,
-    trustServerCertificate: true
-  }
-};
-
-### 4. Start Backend Server
-```bash
-cd backend
-npm install
-node server.js
-```
-Terminal should show:
-
-✅ Connected to SQL Server!
-🚀 Server running on http://localhost:3000
----
-### 5. Open Frontend
-Open frontend/index.html in a browser.
-Make sure your backend is running.
-Test UI and backend flow!
-
----
-### ⭐️ Acknowledgments
-Special thanks to our DBMS instructor and teammates for collaborative effort throughout this project!
 
