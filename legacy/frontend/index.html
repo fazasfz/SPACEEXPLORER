@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer - Mission Control</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="nav-logo">🚀</span>
+                <h1 class="nav-title">MISSION CONTROL</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-page="home">Mission Control</a>
+                <a href="#" class="nav-link" data-page="astronauts">Crew</a>
+                <a href="#" class="nav-link" data-page="missions">Missions</a>
+                <a href="#" class="nav-link" data-page="discoveries">Discoveries</a>
+                <a href="#" class="nav-link" data-page="search">Search</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <div id="home-page" class="page active">
+            <div class="page-header">
+                <h1 class="glow-text">Mission Control Dashboard</h1>
+                <p class="page-subtitle">Space Explorer Log & Crew Management System</p>
+                <div class="title-divider"></div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🚀</div>
+                    <div class="stat-content">
+                        <h3>Active Missions</h3>
+                        <div class="stat-value">2</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍🚀</div>
+                    <div class="stat-content">
+                        <h3>Total Astronauts</h3>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔬</div>
+                    <div class="stat-content">
+                        <h3>Discoveries Logged</h3>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <h3>Mission Success Rate</h3>
+                        <div class="stat-value">94%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Missions Section -->
+            <div class="missions-section">
+                <h2 class="section-title">
+                    <span>🚀</span>
+                    Current Missions
+                </h2>
+                <div id="missions-grid" class="missions-grid">
+                    <!-- Mission cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="mission-card">
+                    <h3>Quick Actions</h3>
+                    <div class="actions-grid">
+                        <button class="space-button" data-page="missions">
+                            <span>🚀</span>
+                            Add New Mission
+                        </button>
+                        <button class="space-button" data-page="astronauts">
+                            <span>👨‍🚀</span>
+                            Register Astronaut
+                        </button>
+                        <button class="space-button" data-page="discoveries">
+                            <span>🔬</span>
+                            Log Discovery
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Missions Page -->
+        <div id="missions-page" class="page">
+            <div class="page-header">
+                <h1 class="glow-text">Mission Planning</h1>
+                <p class="page-subtitle">Create and schedule new space missions</p>
+                <div class="title-divider"></div>
+            </div>
+
+            <div class="form-container">
+                <div class="form-header">
+                    <span>🚀</span>
+                    <h2>New Mission Brief</h2>
+                </div>
+
+                <form id="mission-form" class="space-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="mission-name">Mission Name</label>
+                            <input type="text" id="mission-name" name="name" placeholder="e.g., Artemis VIII" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mission-destination">Destination</label>
+                            <input type="text" id="mission-destination" name="destination" placeholder="e.g., Mars, Europa, Titan" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="mission-objective">Mission Objective</label>
+                            <textarea id="mission-objective" name="objective" placeholder="Describe the primary objectives and goals of this mission..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mission-launch-date">Launch Date</label>
+                            <input type="date" id="mission-launch-date" name="launchDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mission-duration">Duration</label>
+                            <input type="text" id="mission-duration" name="duration" placeholder="e.g., 6 months, 2 years" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mission-priority">Priority Level</label>
+                            <select id="mission-priority" name="priority" required>
+                                <option value="">Select priority</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mission-crew-size">Crew Size</label>
+                            <input type="number" id="mission-crew-size" name="crewSize" placeholder="Number of crew members" min="1" max="20" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="space-button full-width">
+                        <span>🚀</span>
+                        Create Mission
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Astronauts Page -->
+        <div id="astronauts-page" class="page">
+            <div class="page-header">
+                <h1 class="glow-text">Crew Management</h1>
+                <p class="page-subtitle">Register and manage astronaut personnel</p>
+                <div class="title-divider"></div>
+            </div>
+
+            <div class="form-container">
+                <div class="form-header">
+                    <span>👨‍🚀</span>
+                    <h2>Register New Astronaut</h2>
+                </div>
+
+                <form id="astronaut-form" class="space-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="astronaut-name">Full Name</label>
+                            <input type="text" id="astronaut-name" name="name" placeholder="Enter astronaut's full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="astronaut-rank">Rank</label>
+                            <select id="astronaut-rank" name="rank" required>
+                                <option value="">Select rank</option>
+                                <option value="trainee">Trainee</option>
+                                <option value="pilot">Pilot</option>
+                                <option value="specialist">Mission Specialist</option>
+                                <option value="commander">Commander</option>
+                                <option value="captain">Captain</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="astronaut-specialty">Specialty</label>
+                            <select id="astronaut-specialty" name="specialty" required>
+                                <option value="">Select specialty</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="science">Science</option>
+                                <option value="medical">Medical</option>
+                                <option value="navigation">Navigation</option>
+                                <option value="communications">Communications</option>
+                                <option value="geology">Geology</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="astronaut-experience">Experience (years)</label>
+                            <input type="number" id="astronaut-experience" name="experience" placeholder="Years of experience" min="0" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="space-button full-width">
+                        <span>⭐</span>
+                        Register Astronaut
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Discoveries Page -->
+        <div id="discoveries-page" class="page">
+            <div class="page-header">
+                <h1 class="glow-text">Discovery Logs</h1>
+                <p class="page-subtitle">Document new findings and scientific discoveries</p>
+                <div class="title-divider"></div>
+            </div>
+
+            <div class="form-container">
+                <div class="form-header">
+                    <span>🔬</span>
+                    <h2>Log New Discovery</h2>
+                </div>
+
+                <form id="discovery-form" class="space-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="discovery-title">Discovery Title</label>
+                            <input type="text" id="discovery-title" name="title" placeholder="e.g., Subsurface Ocean on Europa" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discovery-type">Discovery Type</label>
+                            <select id="discovery-type" name="type" required>
+                                <option value="">Select type</option>
+                                <option value="geological">Geological</option>
+                                <option value="chemical">Chemical</option>
+                                <option value="biological">Biological</option>
+                                <option value="astronomical">Astronomical</option>
+                                <option value="technological">Technological</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discovery-location">Location</label>
+                            <input type="text" id="discovery-location" name="location" placeholder="e.g., Europa South Pole" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discovery-discoverer">Discovered By</label>
+                            <input type="text" id="discovery-discoverer" name="discoverer" placeholder="Astronaut name or mission" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="discovery-description">Description</label>
+                            <textarea id="discovery-description" name="description" placeholder="Provide detailed description of the discovery..." required></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="space-button full-width">
+                        <span>⭐</span>
+                        Log Discovery
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Page -->
+        <div id="search-page" class="page">
+            <div class="page-header">
+                <h1 class="glow-text">Mission Database Search</h1>
+                <p class="page-subtitle">Search across missions, astronauts, and discoveries</p>
+                <div class="title-divider"></div>
+            </div>
+
+            <div class="search-form">
+                <div class="form-header">
+                    <span>🔍</span>
+                    <h2>Advanced Search</h2>
+                </div>
+
+                <div class="search-input-group">
+                    <input type="text" id="search-input" placeholder="Search for missions, astronauts, or discoveries..." />
+                    <label for="search-type" class="visually-hidden">Search Type</label>
+                    <select id="search-type">
+                        <option value="all">All Records</option>
+                        <option value="missions">Missions</option>
+                        <option value="astronauts">Astronauts</option>
+                        <option value="discoveries">Discoveries</option>
+                    </select>
+                    <button onclick="performSearch()" class="space-button">
+                        <span>🔍</span>
+                        Search
+                    </button>
+                </div>
+
+                <div class="quick-filters">
+                    <span>Quick filters:</span>
+                    <button class="filter-button" onclick="quickFilter('active')">Active Missions</button>
+                    <button class="filter-button" onclick="quickFilter('discoveries')">Recent Discoveries</button>
+                    <button class="filter-button" onclick="quickFilter('crew')">Available Crew</button>
+                </div>
+            </div>
+
+            <div class="search-results" id="search-results">
+                <!-- Search results will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div id="toast-content"></div>
+    </div>
+    <script src="script.js"></script>
+    <style>
+        .visually-hidden {
+            position: absolute !important;
+            height: 1px; width: 1px;
+            overflow: hidden;
+            clip: rect(1px, 1px, 1px, 1px);
+            white-space: nowrap;
+        }
+    </style>
+
+
+
+    <script>
+// 🚀 Astronaut Form Submission
+document.getElementById('astronautForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const data = {
+    full_name: formData.get('full_name'),
+    rank: formData.get('rank'),
+    specialty: formData.get('specialty'),
+    experience_years: parseInt(formData.get('experience_years')),
+  };
+
+  try {
+    const res = await fetch('http://localhost:3000/add-astronaut', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    const msg = await res.text();
+    alert(msg);
+    this.reset();
+  } catch (err) {
+    alert("❌ Error connecting to backend.");
+  }
+});
+
+
+// 🛰️ Mission Form Submission
+document.getElementById('missionForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const data = {
+    mission_name: formData.get('mission_name'),
+    launch_date: formData.get('launch_date'),
+    destination: formData.get('destination')
+  };
+
+  try {
+    const res = await fetch('http://localhost:3000/add-mission', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    const msg = await res.text();
+    alert(msg);
+    this.reset();
+  } catch (err) {
+    alert("❌ Error connecting to backend.");
+  }
+});
+
+// 🔭 Discovery Form Submission
+document.getElementById('discoveryForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const data = {
+    title: formData.get('title'),
+    type: formData.get('type'),
+    description: formData.get('description'),
+    discovery_date: formData.get('discovery_date')
+  };
+
+  try {
+    const res = await fetch('http://localhost:3000/add-discovery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    const msg = await res.text();
+    alert(msg);
+    this.reset();
+  } catch (err) {
+    alert("❌ Error connecting to backend.");
+  }
+});
+
+</script>
+
+</body>
+</html>
+</html>
