@@ -1,11 +1,6 @@
 // ============================================================
-<<<<<<< HEAD
 // SpaceExplorer 2.0 — API Layer
 // Handles local mock states and live remote server downlinks
-=======
-// SpaceExplorer 2.0 — API Layer (Mock)
-// Replace function bodies with fetch() calls when backend is ready
->>>>>>> upstream/main
 // ============================================================
 
 // ── Missions ──────────────────────────────────────────────────────────
@@ -66,7 +61,6 @@ function deleteObservation(id) {
   saveData('se_observations', OBSERVATIONS);
 }
 
-<<<<<<< HEAD
 // ── Live Launch Services & Remote Configuration ───────────────────────
 var SPACEDEVS_BASE_URL = "https://ll.thespacedevs.com/2.2.0";
 var NASA_APOD_URL = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
@@ -161,19 +155,12 @@ function getLaunches() { return [...LAUNCHES]; }
 function getUpcomingLaunches() { return LAUNCHES.filter(l => l.status !== 'launched'); }
 function getRecentLaunches() { return LAUNCHES.filter(l => l.status === 'launched'); }
 
-=======
-// ── Launches ──────────────────────────────────────────────────────────
-function getLaunches() { return [...LAUNCHES]; }
-function getUpcomingLaunches() { return LAUNCHES.filter(l => l.status !== 'launched'); }
-function getRecentLaunches() { return LAUNCHES.filter(l => l.status === 'launched'); }
->>>>>>> upstream/main
 function toggleFollowLaunch(id) {
   const idx = FOLLOWED_LAUNCHES.indexOf(id);
   if (idx === -1) FOLLOWED_LAUNCHES.push(id);
   else FOLLOWED_LAUNCHES.splice(idx, 1);
   saveData('se_followed_launches', FOLLOWED_LAUNCHES);
 }
-<<<<<<< HEAD
 
 function isFollowed(id) { return FOLLOWED_LAUNCHES.includes(id); }
 
@@ -204,10 +191,6 @@ function getUpcomingLaunchesFallback() {
   ];
 }
 
-=======
-function isFollowed(id) { return FOLLOWED_LAUNCHES.includes(id); }
-
->>>>>>> upstream/main
 // ── Leaderboard ───────────────────────────────────────────────────────
 function getLeaderboard() { return [...LEADERBOARD].sort((a, b) => b.points - a.points); }
 
@@ -232,7 +215,4 @@ function getTimelineEvents() {
   getObservations().slice(-2).forEach(o => events.push({ type: 'obs', icon: '🔭', text: `Observation: <b>${o.object}</b> — ${o.location}`, date: o.datetime ? o.datetime.split('T')[0] : '2026-03-10', color: 'var(--accent-warn)' }));
   return events.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/main

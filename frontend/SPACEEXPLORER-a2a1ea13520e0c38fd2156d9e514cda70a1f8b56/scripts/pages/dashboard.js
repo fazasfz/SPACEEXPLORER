@@ -2,10 +2,21 @@
 // SpaceExplorer 2.0 — Dashboard Page
 // ============================================================
 
-function initDashboard() {
-  const stats = getStats();
+// Add variable array container at top scope level of dashboard.js to keep reference 
+let liveDashboardLaunches = [];
 
-  // Stat counters
+async function initDashboard() {
+  // 1. Fetch live launch metrics prior to populating charts
+  liveDashboardLaunches = await fetchUpcomingLaunchesAPI();
+
+  // 2. Fetch and apply NASA APOD background / banner
+  const apodData = await fetchNasaApod();
+  applyDashboardApod(apodData);
+
+  const stats = getStats();
+  stats.activeMissions = liveDashboardLaunches.length;
+
+  // Stat counters layout engine injection
   const statEls = {
     'stat-active-missions': { val: stats.activeMissions, suffix: '' },
     'stat-crew-deployed':   { val: stats.crewDeployed, suffix: '' },
@@ -18,63 +29,72 @@ function initDashboard() {
     if (el) animateCounter(el, val, 1500, suffix);
   });
 
-  // Live Mission Feed
   renderMissionFeed();
-
-  // Discovery Chart
   setTimeout(() => initDiscoveryChart('discovery-chart'), 300);
-
-  // Timeline
   renderTimeline();
-
-  // Mini Crew
   renderMiniCrew();
-
-  // Start countdowns on feed cards
-  getMissions().filter(m => m.status !== 'completed' && m.status !== 'failed').forEach(m => {
-    startCountdown(`cd-${m.id}`, m.launchDate);
-  });
 }
 
+/**
+ * Visually injects NASA APOD image and details into the dashboard panel
+ */
+function applyDashboardApod(apod) {
+  // Option A: Look for a dedicated preview container id
+  const apodContainer = document.getElementById('dashboard-hero-banner');
+  if (apodContainer) {
+    apodContainer.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(10,12,18,1)), url('${apod.url}')`;
+    apodContainer.style.backgroundSize = 'cover';
+    apodContainer.style.backgroundPosition = 'center';
+  }
+  
+  // Option B: Safely inject APOD title text into an allocation block if present
+  const apodTitleEl = document.getElementById('apod-title');
+  if (apodTitleEl) {
+    apodTitleEl.innerHTML = `🪐 <b>Astronomy Picture of the Day:</b> ${apod.title}`;
+    apodTitleEl.title = apod.explanation; // Shows technical description tooltip on hover
+  }
+}
+
+// Rewriting renderMissionFeed to serve live launch objects seamlessly
 function renderMissionFeed() {
   const container = document.getElementById('mission-feed');
   if (!container) return;
-  const missions = getMissions().slice(0, 6);
-  if (!missions.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🚀</div><div class="empty-title">No Missions</div></div>';
+
+  if (!liveDashboardLaunches.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🚀</div><div class="empty-title">No Active Launch Chains</div></div>';
     return;
   }
-  container.innerHTML = missions.map(m => {
-    const gradient = `linear-gradient(135deg, hsl(${Math.abs(m.name.charCodeAt(0) * 7) % 360},60%,15%), hsl(${Math.abs(m.name.charCodeAt(2) * 13) % 360},70%,20%))`;
-    const crewNames = getAstronauts().filter(a => a.missionId === m.id);
-    const avatarsHTML = crewNames.slice(0,3).map(a =>
-      `<span class="crew-avatar" style="background:${hashColor(a.name)}">${getInitials(a.name)}</span>`
-    ).join('') + (crewNames.length > 3 ? `<span class="crew-avatar crew-avatar-more">+${crewNames.length - 3}</span>` : '');
+
+  container.innerHTML = liveDashboardLaunches.slice(0, 4).map(m => {
+    const gradient = `linear-gradient(135deg, #111424 0%, #1a2238 100%)`;
+    const badgeClass = m.status ? m.status.replace(' ', '-') : 'go';
 
     return `
-    <div class="mission-feed-card card card-brackets" style="cursor:pointer" onclick="openMissionDetail(${m.id})">
-      <div class="card-header-bg" style="background:${gradient}">
-        <div style="position:relative;z-index:1;">
-          <span class="badge ${m.status}">
-            <span class="status-dot ${m.status}"></span>${m.status.toUpperCase()}
+    <div class="mission-feed-card card card-brackets" style="cursor:pointer" onclick="navigateTo('launches')">
+      <div class="card-header-bg" style="background:${gradient}; border-bottom: 1px solid var(--border-subtle); padding: 8px var(--space-md);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="badge ${badgeClass}">
+            <span class="status-dot ${badgeClass}"></span>${badgeClass.toUpperCase()}
           </span>
+          <span style="font-size:0.65rem; font-family:var(--font-mono); color:var(--accent-primary)">LIVE T-MINUS</span>
         </div>
       </div>
       <div class="card-body" style="padding:var(--space-md)">
-        <div class="mission-title">${m.name}</div>
-        <div class="mission-destination">📍 ${m.destination}</div>
-        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${m.progress}%"></div></div>
-        <div class="countdown" id="cd-${m.id}">Loading...</div>
-        <div class="crew-stack" style="margin-bottom:0">${avatarsHTML}</div>
-        <div style="display:flex;gap:var(--space-xs);margin-top:var(--space-sm)">
-          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openMissionDetail(${m.id})">VIEW DETAILS</button>
-        </div>
+        <div class="mission-title" style="font-weight:bold; font-size:0.95rem; line-height:1.3; height:40px; overflow:hidden;">${m.mission}</div>
+        <div class="mission-destination" style="font-size:0.8rem; margin: 4px 0;">🚀 ${m.rocket}</div>
+        <div class="countdown dash-live-ticker" id="dash-ticker-${m.id.replace(/[^a-zA-Z0-9]/g, '')}" data-target="${m.netDate}" style="color:var(--accent-pulse); font-family:var(--font-mono); font-size:0.85rem; margin-top:8px;">Syncing sequence...</div>
       </div>
     </div>`;
   }).join('');
 
-  // Restart countdowns
-  getMissions().forEach(m => startCountdown(`cd-${m.id}`, m.launchDate));
+  // Start internal dashboard clock cycle loops
+  if (window.activeDashboardInterval) clearInterval(window.activeDashboardInterval);
+  window.activeDashboardInterval = setInterval(() => {
+    document.querySelectorAll('.dash-live-ticker').forEach(el => {
+      const target = el.getAttribute('data-target');
+      if (target) el.textContent = getCountdownString(target);
+    });
+  }, 1000);
 }
 
 function openMissionDetail(id) {

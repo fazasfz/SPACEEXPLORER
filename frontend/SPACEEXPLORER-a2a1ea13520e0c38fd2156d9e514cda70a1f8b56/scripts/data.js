@@ -105,7 +105,6 @@ let OBSERVATIONS = loadData('se_observations', DEFAULT_OBSERVATIONS);
 let LAUNCHES     = loadData('se_launches', DEFAULT_LAUNCHES);
 let LEADERBOARD  = loadData('se_leaderboard', DEFAULT_LEADERBOARD);
 let FOLLOWED_LAUNCHES = loadData('se_followed_launches', []);
-<<<<<<< HEAD
 
 // ══════════════════════════════════════════════
 // Module 2 — Observation Log Data Management
@@ -256,5 +255,3 @@ const tonightsSkySuggestions = [
   { name: "Jupiter", type: "Planet", mag: "-2.2", visibility: "Bright East Horizon" },
   { name: "Hercules Cluster (M13)", type: "Deep Sky", mag: "5.8", visibility: "High Zenith" }
 ];
-=======
->>>>>>> upstream/main
