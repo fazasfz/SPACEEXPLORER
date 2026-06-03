@@ -249,6 +249,7 @@
 
 .table-toolbar { display: flex; gap: var(--space-sm); align-items: center; margin-bottom: var(--space-sm); flex-wrap: wrap; }
 .table-search-input { flex: 1; min-width: 160px; }
+<<<<<<< HEAD
 
 /* ==========================================================================
    MODULE 2: OBSERVATION LOG STYLING DEFINITIONS
@@ -727,3 +728,5 @@
   color: #ff4a4a;
   content: "Unfollow"; /* Clean visual prompt cue when hovering followed buttons */
 }
+=======
+>>>>>>> upstream/main

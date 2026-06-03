@@ -2,6 +2,7 @@
 // SpaceExplorer 2.0 — Countdown & Mission Clock
 // ============================================================
 
+<<<<<<< HEAD
 // Helper parsing function to guarantee strings are updated gracefully if missing in utilities
 function getCountdownString(targetDate) {
   const diff = new Date(targetDate) - new Date();
@@ -16,6 +17,8 @@ function getCountdownString(targetDate) {
   return `T-${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
+=======
+>>>>>>> upstream/main
 // ── Mission Clock ─────────────────────────────────────────────
 // Counts up from a fixed launch date (Artemis IX)
 const MISSION_EPOCH = new Date('2026-01-01T00:00:00Z').getTime();
@@ -55,6 +58,7 @@ function clearAllCountdowns() {
   Object.keys(countdownIntervals).forEach(k => delete countdownIntervals[k]);
 }
 
+<<<<<<< HEAD
 // ── Hero Launch Dynamic Selection Engine ───────────────────────
 let heroCDInterval = null;
 
@@ -114,13 +118,29 @@ function initHeroLaunchSequence() {
     }
 
     // Calculate time segments
+=======
+// ── Hero Launch Countdown (Launches Page) ─────────────────────
+let heroCDInterval = null;
+
+function startHeroCountdown(targetDate) {
+  if (heroCDInterval) clearInterval(heroCDInterval);
+  function tick() {
+    const now = new Date();
+    const target = new Date(targetDate);
+    let diff = target - now;
+    if (diff < 0) diff = 0;
+>>>>>>> upstream/main
     const days  = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
     const mins  = Math.floor((diff % 3600000) / 60000);
     const secs  = Math.floor((diff % 60000) / 1000);
 
+<<<<<<< HEAD
     // Dom digital injection update with flip animation hooks
     const updateDigitBox = (id, val) => {
+=======
+    const update = (id, val) => {
+>>>>>>> upstream/main
       const el = document.getElementById(id);
       if (el) {
         const str = String(val).padStart(2, '0');
@@ -134,6 +154,7 @@ function initHeroLaunchSequence() {
       }
     };
 
+<<<<<<< HEAD
     updateDigitBox('cd-days',  days);
     updateDigitBox('cd-hours', hours);
     updateDigitBox('cd-mins',  mins);
@@ -143,3 +164,13 @@ function initHeroLaunchSequence() {
   tick();
   heroCDInterval = setInterval(tick, 1000);
 }
+=======
+    update('cd-days',  days);
+    update('cd-hours', hours);
+    update('cd-mins',  mins);
+    update('cd-secs',  secs);
+  }
+  tick();
+  heroCDInterval = setInterval(tick, 1000);
+}
+>>>>>>> upstream/main

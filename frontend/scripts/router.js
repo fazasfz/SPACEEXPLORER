@@ -4,6 +4,7 @@
 
 const PAGES = {
   'dashboard':    { title: 'Mission Control Dashboard', module: () => initDashboard() },
+<<<<<<< HEAD
   'missions':     { title: 'Active Missions',           module: () => initMissions() },
   'crew':         { title: 'Crew Roster',                module: () => initCrew() },
   'discoveries':  { title: 'Discovery Log',              module: () => initDiscoveries() },
@@ -11,6 +12,12 @@ const PAGES = {
   // 🌌 MODULE 2: Updated to point to our exact page initialization engine function
   'observations': { title: 'Observation Log',            module: () => initObservationsPage() },
   
+=======
+  'missions':     { title: 'Active Missions',            module: () => initMissions() },
+  'crew':         { title: 'Crew Roster',                module: () => initCrew() },
+  'discoveries':  { title: 'Discovery Log',              module: () => initDiscoveries() },
+  'observations': { title: 'Observation Log',            module: () => initObservations() },
+>>>>>>> upstream/main
   'launches':     { title: 'Live Launches',              module: () => initLaunches() },
   'leaderboard':  { title: 'Leaderboard',                module: () => initLeaderboard() },
   'search':       { title: 'Search & Database',          module: () => initSearch() },
@@ -33,7 +40,11 @@ function navigateTo(page) {
   }
 
   // Update nav — wait for exit to partly play
+<<<<<<< HEAD
   setTimeout(async () => {
+=======
+  setTimeout(() => {
+>>>>>>> upstream/main
     // Show new page
     const newEl = document.getElementById(`page-${page}`);
     if (newEl) {
@@ -52,6 +63,7 @@ function navigateTo(page) {
 
     currentPage = page;
 
+<<<<<<< HEAD
     // Clear any persistent page animation layout intervals when switching views
     if (page !== 'launches' && window.activeLaunchesPageInterval) clearInterval(window.activeLaunchesPageInterval);
     if (page !== 'dashboard' && window.activeDashboardInterval) clearInterval(window.activeDashboardInterval);
@@ -62,6 +74,10 @@ function navigateTo(page) {
     } catch(e) { 
       console.warn('Telemetry page initialization exception caught:', e); 
     }
+=======
+    // Init page module
+    try { PAGES[page].module(); } catch(e) { console.warn('Page init error:', e); }
+>>>>>>> upstream/main
 
     // Scroll to top
     const main = document.getElementById('main-content');

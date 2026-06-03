@@ -6,9 +6,17 @@
   <title>Mission Control: Space Explorer 2.0</title>
   <meta name="description" content="NASA/ESA-grade mission control dashboard for managing space operations, crew, and discoveries.">
 
+<<<<<<< HEAD
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+=======
+  <!-- External Libraries (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Stylesheets -->
+>>>>>>> upstream/main
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
   <link rel="stylesheet" href="styles/components.css">
@@ -17,12 +25,25 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <div id="tsparticles"></div>
 
 <div id="toast-container"></div>
 
 <div id="app">
 
+=======
+<!-- Particle star field background -->
+<div id="tsparticles"></div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════ APP SHELL ═══════════════ -->
+<div id="app">
+
+  <!-- ── Sidebar ── -->
+>>>>>>> upstream/main
   <aside id="sidebar" role="navigation" aria-label="Main navigation">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">
@@ -32,6 +53,10 @@
     </div>
 
     <nav class="sidebar-nav">
+<<<<<<< HEAD
+=======
+      <!-- 1. Dashboard -->
+>>>>>>> upstream/main
       <button class="nav-item active" data-page="dashboard" aria-label="Mission Control Dashboard">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -41,6 +66,10 @@
         </div>
         <span class="nav-label">Mission Control</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 2. Missions -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="missions" aria-label="Active Missions">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -49,6 +78,10 @@
         </div>
         <span class="nav-label">Active Missions</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 3. Crew -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="crew" aria-label="Crew Roster">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -58,6 +91,10 @@
         </div>
         <span class="nav-label">Crew Roster</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 4. Discoveries -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="discoveries" aria-label="Discovery Log">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -67,6 +104,10 @@
         </div>
         <span class="nav-label">Discovery Log</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 5. Observations -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="observations" aria-label="Observation Log">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -77,6 +118,10 @@
         </div>
         <span class="nav-label">Observation Log</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 6. Launches -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="launches" aria-label="Live Launches">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -86,6 +131,10 @@
         </div>
         <span class="nav-label">Live Launches</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 7. Leaderboard -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="leaderboard" aria-label="Leaderboard">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -94,6 +143,10 @@
         </div>
         <span class="nav-label">Leaderboard</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 8. Search -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="search" aria-label="Search and Database">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -102,6 +155,10 @@
         </div>
         <span class="nav-label">Search &amp; DB</span>
       </button>
+<<<<<<< HEAD
+=======
+      <!-- 9. Login -->
+>>>>>>> upstream/main
       <button class="nav-item" data-page="login" aria-label="Login and Profile">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -116,18 +173,33 @@
     <div class="sidebar-version">v2.0.0 · SPACEEXPLORER</div>
   </aside>
 
+<<<<<<< HEAD
   <div id="main-container">
 
+=======
+  <!-- ── Main Container ── -->
+  <div id="main-container">
+
+    <!-- Header Bar -->
+>>>>>>> upstream/main
     <header id="header">
       <div class="header-left">
         <span id="page-title">Mission Control Dashboard</span>
         <span class="header-breadcrumb">/ SPACE EXPLORER 2.0</span>
       </div>
       <div class="header-right">
+<<<<<<< HEAD
+=======
+        <!-- Mission Clock -->
+>>>>>>> upstream/main
         <div class="mission-clock" aria-label="Mission elapsed time">
           <span class="mission-clock-label">MET</span>
           <span id="mission-clock-value" class="mono">000:00:00:00</span>
         </div>
+<<<<<<< HEAD
+=======
+        <!-- Notifications -->
+>>>>>>> upstream/main
         <button class="notif-btn" aria-label="Notifications">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -135,18 +207,33 @@
           </svg>
           <span class="notif-badge"></span>
         </button>
+<<<<<<< HEAD
+=======
+        <!-- User Avatar -->
+>>>>>>> upstream/main
         <div class="user-avatar" aria-label="User profile" title="Commander · Mission Director">MC</div>
       </div>
     </header>
 
+<<<<<<< HEAD
     <main id="main-content">
       
+=======
+    <!-- Main Content Scroll Area -->
+    <main id="main-content">
+
+      <!-- ═══ PAGE 1: Dashboard ═══ -->
+>>>>>>> upstream/main
       <div id="page-dashboard" class="page">
         <div class="page-header">
           <h1 class="glow-text">Mission Control Dashboard</h1>
           <p>Space Explorer 2.0 — Integrated Operations Platform</p>
         </div>
 
+<<<<<<< HEAD
+=======
+        <!-- Stat Cards Row -->
+>>>>>>> upstream/main
         <div class="dashboard-stats">
           <div class="card card-brackets stat-card">
             <div class="stat-icon-wrap" style="background:rgba(0,212,255,0.12)">
@@ -198,6 +285,10 @@
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        <!-- Live Mission Feed -->
+>>>>>>> upstream/main
         <div style="margin-bottom:var(--space-xl)">
           <div class="live-feed-header">
             <span class="section-title" style="flex:1">🚀 Live Mission Feed</span>
@@ -206,15 +297,29 @@
           <div class="h-scroll" id="mission-feed"></div>
         </div>
 
+<<<<<<< HEAD
         <div class="dashboard-bottom">
+=======
+        <!-- Bottom Row -->
+        <div class="dashboard-bottom">
+          <!-- Discovery Chart -->
+>>>>>>> upstream/main
           <div class="card card-brackets">
             <div class="section-title">🔬 Discoveries by Type</div>
             <div style="height:220px;position:relative"><canvas id="discovery-chart"></canvas></div>
           </div>
+<<<<<<< HEAD
+=======
+          <!-- Timeline -->
+>>>>>>> upstream/main
           <div class="card card-brackets">
             <div class="section-title">📅 Recent Activity</div>
             <div id="dash-timeline"></div>
           </div>
+<<<<<<< HEAD
+=======
+          <!-- Mini Crew -->
+>>>>>>> upstream/main
           <div class="card card-brackets">
             <div class="section-title" style="margin-bottom:var(--space-sm)">👨‍🚀 Crew Status</div>
             <div id="dash-crew"></div>
@@ -223,6 +328,10 @@
         </div>
       </div>
 
+<<<<<<< HEAD
+=======
+      <!-- ═══ PAGE 2: Missions ═══ -->
+>>>>>>> upstream/main
       <div id="page-missions" class="page">
         <div class="page-header">
           <h1 class="glow-text">Active Missions</h1>
@@ -239,6 +348,10 @@
         <button class="fab" onclick="openAddMission()" aria-label="Add new mission" title="Add Mission">+</button>
       </div>
 
+<<<<<<< HEAD
+=======
+      <!-- ═══ PAGE 3: Crew ═══ -->
+>>>>>>> upstream/main
       <div id="page-crew" class="page">
         <div class="page-header">
           <h1 class="glow-text">Crew Roster</h1>
@@ -263,7 +376,13 @@
         <button class="fab" onclick="openAddAstronaut()" aria-label="Add astronaut" title="Add Astronaut">+</button>
       </div>
 
+<<<<<<< HEAD
       <div id="page-discoveries" class="page">
+=======
+      <!-- ═══ PAGE 4: Discoveries ═══ -->
+      <div id="page-discoveries" class="page">
+        <!-- Hero Banner -->
+>>>>>>> upstream/main
         <div class="discoveries-hero">
           <div style="font-family:var(--font-heading);font-size:0.75rem;letter-spacing:0.15em;color:var(--text-secondary);margin-bottom:8px">TOTAL DISCOVERIES</div>
           <div class="discovery-count" id="total-discoveries">0</div>
@@ -274,6 +393,10 @@
         </div>
 
         <div class="discoveries-layout">
+<<<<<<< HEAD
+=======
+          <!-- Filter Sidebar -->
+>>>>>>> upstream/main
           <div class="filter-sidebar">
             <h3>Filter By Type</h3>
             <label class="filter-checkbox"><input type="checkbox" class="disc-type-cb" value="geological" checked> ⛰️ Geological</label>
@@ -285,11 +408,16 @@
             <h3>Search</h3>
             <input class="form-input" id="disc-search" placeholder="Title, location..." style="font-size:0.8rem" aria-label="Search discoveries">
           </div>
+<<<<<<< HEAD
+=======
+          <!-- Discovery Cards (Masonry) -->
+>>>>>>> upstream/main
           <div class="discoveries-grid" id="discoveries-grid"></div>
         </div>
         <button class="fab" onclick="openAddDiscovery()" aria-label="Log discovery" title="Log Discovery">+</button>
       </div>
 
+<<<<<<< HEAD
       <div id="page-observations" class="page">
         <div class="page-header">
           <h1 class="glow-text">Observation Log</h1>
@@ -391,10 +519,79 @@
           </div> </div> <button class="fab" onclick="openAddObservation()" aria-label="Log observation" title="Log Observation">+</button>
       </div> <div id="page-launches" class="page">
 
+=======
+      <!-- ═══ PAGE 5: Observations ═══ -->
+      <div id="page-observations" class="page">
+        <div class="page-header">
+          <h1 class="glow-text">Observation Log</h1>
+          <p>Personal sky observations and astronomical notes</p>
+        </div>
+
+        <!-- Tonight's Sky Banner -->
+        <div class="obs-tonight">
+          <div>
+            <div style="font-family:var(--font-heading);font-size:0.72rem;letter-spacing:0.12em;color:var(--text-secondary);margin-bottom:var(--space-sm)">📅 MARCH 24, 2026 · TONIGHT'S SKY</div>
+            <h2 style="margin-bottom:var(--space-md)">Visible Tonight</h2>
+            <ul class="sky-object-list">
+              <li class="sky-object-item">🪐 <span class="sky-object-name">Jupiter</span> <span class="sky-object-time">21:30 — Altitude 42°</span></li>
+              <li class="sky-object-item">🌟 <span class="sky-object-name">Venus</span> <span class="sky-object-time">20:10 — Western horizon</span></li>
+              <li class="sky-object-item">🛰️ <span class="sky-object-name">ISS Pass</span> <span class="sky-object-time">21:47 — Max 83°</span></li>
+              <li class="sky-object-item">☄️ <span class="sky-object-name">C/2024 G3 Comet</span> <span class="sky-object-time">04:30 — NE horizon</span></li>
+              <li class="sky-object-item">🌌 <span class="sky-object-name">Orion Nebula (M42)</span> <span class="sky-object-time">20:45 — High in south</span></li>
+            </ul>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:3rem;margin-bottom:var(--space-sm)">🌙</div>
+            <button class="btn btn-secondary">Enable Location</button>
+            <div style="font-size:0.7rem;color:var(--text-dim);margin-top:var(--space-xs)">For real-time sky data</div>
+          </div>
+        </div>
+
+        <div class="obs-layout">
+          <!-- Cards -->
+          <div>
+            <div class="section-title">All Observations</div>
+            <div class="obs-cards-grid" id="obs-cards"></div>
+          </div>
+          <!-- Stats Sidebar -->
+          <div>
+            <div class="card card-brackets" style="margin-bottom:var(--space-md)">
+              <div class="section-title">Your Stats</div>
+              <div style="display:grid;gap:var(--space-sm)">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-xs) 0;border-bottom:1px solid var(--border-subtle)">
+                  <span style="font-size:0.78rem;color:var(--text-secondary)">Total Observations</span>
+                  <span class="mono" style="color:var(--accent-primary)" id="obs-stat-total">0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-xs) 0;border-bottom:1px solid var(--border-subtle)">
+                  <span style="font-size:0.78rem;color:var(--text-secondary)">Favourite Type</span>
+                  <span class="mono" style="color:var(--accent-pulse)" id="obs-stat-fav">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-xs) 0">
+                  <span style="font-size:0.78rem;color:var(--text-secondary)">Best Seeing</span>
+                  <span class="mono" style="color:#00ff88" id="obs-stat-best">—</span>
+                </div>
+              </div>
+            </div>
+            <div class="card card-brackets">
+              <div class="section-title">Obs. Per Month</div>
+              <div style="height:160px;position:relative"><canvas id="obs-chart"></canvas></div>
+            </div>
+          </div>
+        </div>
+        <button class="fab" onclick="openAddObservation()" aria-label="Log observation" title="Log Observation">+</button>
+      </div>
+
+      <!-- ═══ PAGE 6: Launches ═══ -->
+      <div id="page-launches" class="page">
+>>>>>>> upstream/main
         <div class="page-header">
           <h1 class="glow-text">Live Launches</h1>
           <p>Real-time launch tracking and mission schedules</p>
         </div>
+<<<<<<< HEAD
+=======
+        <!-- Hero Countdown -->
+>>>>>>> upstream/main
         <div class="launch-hero">
           <div class="launch-hero-mission" id="hero-mission-name">NEXT LAUNCH</div>
           <div class="countdown-display">
@@ -421,12 +618,24 @@
           <div class="launch-hero-rocket" id="hero-rocket">Loading launch data...</div>
         </div>
 
+<<<<<<< HEAD
         <div class="section-title">Upcoming Launches</div>
         <div class="launch-cards-grid" id="launch-cards"></div>
 
         <div class="section-title" style="margin-top:var(--space-xl)">Recent Launches</div>
         <div class="h-scroll" id="recent-launches"></div>
 
+=======
+        <!-- Launch Cards -->
+        <div class="section-title">Upcoming Launches</div>
+        <div class="launch-cards-grid" id="launch-cards"></div>
+
+        <!-- Recent Launches -->
+        <div class="section-title" style="margin-top:var(--space-xl)">Recent Launches</div>
+        <div class="h-scroll" id="recent-launches"></div>
+
+        <!-- Launch Calendar -->
+>>>>>>> upstream/main
         <div class="launch-calendar" style="margin-top:var(--space-xl)">
           <div class="cal-header">
             <span class="cal-title" id="cal-month-title">March 2026</span>
@@ -435,25 +644,43 @@
         </div>
       </div>
 
+<<<<<<< HEAD
+=======
+      <!-- ═══ PAGE 7: Leaderboard ═══ -->
+>>>>>>> upstream/main
       <div id="page-leaderboard" class="page">
         <div class="page-header">
           <h1 class="glow-text">Explorer Leaderboard</h1>
           <p>Top mission commanders and space explorers</p>
         </div>
 
+<<<<<<< HEAD
         <div class="podium-section">
+=======
+        <!-- Podium -->
+        <div class="podium-section">
+          <!-- 2nd -->
+>>>>>>> upstream/main
           <div class="podium-place podium-place-2" id="podium-2">
             <div class="podium-avatar">🥈</div>
             <div class="podium-username">—</div>
             <div class="podium-pts">0 pts</div>
             <div class="podium-base">2</div>
           </div>
+<<<<<<< HEAD
+=======
+          <!-- 1st -->
+>>>>>>> upstream/main
           <div class="podium-place podium-place-1" id="podium-1">
             <div class="podium-avatar">🏆</div>
             <div class="podium-username">—</div>
             <div class="podium-pts">0 pts</div>
             <div class="podium-base">1</div>
           </div>
+<<<<<<< HEAD
+=======
+          <!-- 3rd -->
+>>>>>>> upstream/main
           <div class="podium-place podium-place-3" id="podium-3">
             <div class="podium-avatar">🥉</div>
             <div class="podium-username">—</div>
@@ -462,6 +689,10 @@
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        <!-- Rankings Table -->
+>>>>>>> upstream/main
         <div class="card card-brackets" style="padding:0;overflow:hidden;margin-bottom:var(--space-xl)">
           <div class="data-table-wrap" style="border:none">
             <table class="data-table">
@@ -480,9 +711,17 @@
           </div>
         </div>
 
+<<<<<<< HEAD
         <div class="section-title">Achievement Badges</div>
         <div class="achievements-grid" id="achievements-grid" style="margin-bottom:var(--space-xl)"></div>
 
+=======
+        <!-- Achievement Badges -->
+        <div class="section-title">Achievement Badges</div>
+        <div class="achievements-grid" id="achievements-grid" style="margin-bottom:var(--space-xl)"></div>
+
+        <!-- Points System -->
+>>>>>>> upstream/main
         <div class="points-system">
           <button class="points-system-header" id="pts-system-header" aria-expanded="false">
             <h3>How Points Are Earned</h3>
@@ -498,7 +737,13 @@
         </div>
       </div>
 
+<<<<<<< HEAD
       <div id="page-search" class="page">
+=======
+      <!-- ═══ PAGE 8: Search ═══ -->
+      <div id="page-search" class="page">
+        <!-- Search Hero -->
+>>>>>>> upstream/main
         <div class="search-hero">
           <h1 class="glow-text">Search &amp; Database</h1>
           <div class="search-input-wrap">
@@ -516,6 +761,10 @@
 
         <div class="search-results-section" id="search-results"></div>
 
+<<<<<<< HEAD
+=======
+        <!-- Database Tables -->
+>>>>>>> upstream/main
         <div class="page-header" style="margin-top:var(--space-2xl)">
           <h2>Full Database</h2>
           <p>Browse, filter, sort, and export all data</p>
@@ -529,8 +778,15 @@
         <div id="db-table-container"></div>
       </div>
 
+<<<<<<< HEAD
       <div id="page-login" class="page auth-page">
         <div class="auth-card">
+=======
+      <!-- ═══ PAGE 9: Login ═══ -->
+      <div id="page-login" class="page auth-page">
+        <div class="auth-card">
+          <!-- Visual Side -->
+>>>>>>> upstream/main
           <div class="auth-visual">
             <div class="auth-visual-icon">🚀</div>
             <div class="auth-visual-title">MISSION CONTROL</div>
@@ -541,12 +797,20 @@
               <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-dim)">SA-OPSEC CLEARANCE REQUIRED</div>
             </div>
           </div>
+<<<<<<< HEAD
+=======
+          <!-- Form Side -->
+>>>>>>> upstream/main
           <div class="auth-form-area">
             <div class="auth-toggle">
               <button class="auth-toggle-btn active" data-mode="login">Sign In</button>
               <button class="auth-toggle-btn" data-mode="register">Register</button>
             </div>
 
+<<<<<<< HEAD
+=======
+            <!-- Login Form -->
+>>>>>>> upstream/main
             <div id="login-form-fields">
               <form id="login-form" novalidate>
                 <div class="form-group">
@@ -570,6 +834,10 @@
               </form>
             </div>
 
+<<<<<<< HEAD
+=======
+            <!-- Register Form -->
+>>>>>>> upstream/main
             <div id="register-form-fields" class="hidden" style="display:none">
               <form id="register-form" novalidate>
                 <div class="form-group">
@@ -619,23 +887,47 @@
         </div>
       </div>
 
+<<<<<<< HEAD
     </main></div></div><script src="scripts/data.js"></script>
 <script src="scripts/api.js"></script>
+=======
+    </main><!-- /#main-content -->
+  </div><!-- /#main-container -->
+</div><!-- /#app -->
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<!-- Data Layer -->
+<script src="scripts/data.js"></script>
+<script src="scripts/api.js"></script>
+<!-- Core -->
+>>>>>>> upstream/main
 <script src="scripts/components.js"></script>
 <script src="scripts/countdown.js"></script>
 <script src="scripts/charts.js"></script>
 <script src="scripts/router.js"></script>
+<<<<<<< HEAD
+=======
+<!-- Pages -->
+>>>>>>> upstream/main
 <script src="scripts/pages/dashboard.js"></script>
 <script src="scripts/pages/missions.js"></script>
 <script src="scripts/pages/crew.js"></script>
 <script src="scripts/pages/discoveries.js"></script>
+<<<<<<< HEAD
 <script src="scripts/pages/observations.js"></script> 
+=======
+<script src="scripts/pages/observations.js"></script>
+>>>>>>> upstream/main
 <script src="scripts/pages/launches.js"></script>
 <script src="scripts/pages/leaderboard.js"></script>
 <script src="scripts/pages/search.js"></script>
 <script src="scripts/pages/login.js"></script>
 
+<<<<<<< HEAD
 <!-- <script>
+=======
+<script>
+>>>>>>> upstream/main
 // ══════════════════════════════════════════════
 // SpaceExplorer 2.0 — App Init
 // ══════════════════════════════════════════════
@@ -671,6 +963,7 @@ const header  = document.getElementById('header');
 if (sidebar && header) {
   sidebar.addEventListener('mouseenter', () => header.style.left = 'var(--sidebar-expanded)');
   sidebar.addEventListener('mouseleave', () => header.style.left = 'var(--sidebar-collapsed)');
+<<<<<<< HEAD
 }// 2. Start dynamic mission data clock and array checks
 
 startMissionClock();
@@ -725,3 +1018,10 @@ initHeroLaunchSequence(); // Simply replace startHeroCountdown() with this dynam
   </script>
 </body>
 </html>
+=======
+}
+</script>
+
+</body>
+</html>
+>>>>>>> upstream/main
