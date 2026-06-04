@@ -105,3 +105,153 @@ let OBSERVATIONS = loadData('se_observations', DEFAULT_OBSERVATIONS);
 let LAUNCHES     = loadData('se_launches', DEFAULT_LAUNCHES);
 let LEADERBOARD  = loadData('se_leaderboard', DEFAULT_LEADERBOARD);
 let FOLLOWED_LAUNCHES = loadData('se_followed_launches', []);
+
+// ══════════════════════════════════════════════
+// Module 2 — Observation Log Data Management
+// ══════════════════════════════════════════════
+
+// Default initial mock data if localStorage is empty
+const defaultObservations = [
+  {
+    id: "obs-1",
+    targetName: "Orion Nebula (M42)",
+    objectType: "Deep Sky",
+    constellation: "Orion",
+    equipment: "Sky-Watcher 8\" Dobson, 25mm Eyepiece",
+    bortleScale: 4,
+    seeing: "Excellent",
+    coordinates: "RA 05h 35m / Dec -05° 23'",
+    notes: "Beautiful gaseous structures visible. Nebulosity is bright with a slight greenish tint under high magnification.",
+    photoUrl: "https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=600&q=80",
+    date: "2026-05-10T22:30:00.000Z"
+  },
+  {
+    id: "obs-2",
+    targetName: "Saturn",
+    objectType: "Planet",
+    constellation: "Aquarius",
+    equipment: "Celestron NexStar 6SE, 9mm Eyepiece",
+    bortleScale: 6,
+    seeing: "Fair",
+    coordinates: "RA 22h 32m / Dec -11° 45'",
+    notes: "Cassini Division briefly visible during moments of steady atmosphere. Titan clearly spotted to the east.",
+    photoUrl: "", // No photo test case
+    date: "2026-05-15T21:15:00.000Z"
+  }
+];
+// ============================================================
+// SpaceExplorer 2.0 — Dynamic Module 1 Data Core
+// ============================================================
+
+// Anchoring timestamps dynamically to ensure countdowns never freeze on load
+const currentMoment = Date.now();
+
+window.upcomingLaunchesData = [
+  {
+    id: "lnch-f9-starlink",
+    missionName: "Starlink Operational Fleet Deployment",
+    rocket: "Falcon 9 Block 5",
+    location: "CCSFS SLC-40, Florida",
+    provider: "SpaceX",
+    status: "GO",
+    payloadType: "COMMUNICATIONS",
+    // Set to launch exactly 1 day, 17 hours, 39 minutes, and 24 seconds from right now!
+    windowOpen: new Date(currentMoment + (1 * 24 * 60 * 60 * 1000) + (17 * 60 * 60 * 1000) + (39 * 60 * 1000) + (24 * 1000)).toISOString()
+  },
+  {
+    id: "lnch-sls-artemis",
+    missionName: "Artemis III Crewed Lunar Landing",
+    rocket: "Space Launch System (SLS) Block 1",
+    location: "LC-39B, Kennedy Space Center, Florida",
+    provider: "NASA",
+    status: "HOLD",
+    payloadType: "CREWED EXPLORATION",
+    windowOpen: new Date(currentMoment + (45 * 24 * 60 * 60 * 1000)).toISOString() // 45 days out
+  },
+  {
+    id: "lnch-f9-iss",
+    missionName: "CRS-34 ISS Commercial Resupply Run",
+    rocket: "Falcon 9 Block 5",
+    location: "LC-39A, Kennedy Space Center, Florida",
+    provider: "NASA / SpaceX",
+    status: "GO",
+    payloadType: "ISS RESUPPLY",
+    windowOpen: new Date(currentMoment + (12 * 24 * 60 * 60 * 1000) + (4 * 60 * 60 * 1000)).toISOString() // 12 days out
+  }
+];
+
+// Verify followed missions local store initialization
+if (!localStorage.getItem('followed_missions')) {
+  localStorage.setItem('followed_missions', JSON.stringify([]));
+}
+
+// Initialize Observations Store
+if (!localStorage.getItem('space_observations')) {
+  localStorage.setItem('space_observations', JSON.stringify(defaultObservations));
+}
+
+// Ensure this structural fallback exists in your local storage initialization
+if (!localStorage.getItem('spaceexplorer_observations')) {
+  const defaultObservations = [
+    {
+      id: "obs-001",
+      target: "Orion Nebula (M42)",
+      equipment: "NexStar 6SE Telescope",
+      location: "Sector 4-B",
+      weather: "Clear Sky, Stable Seeing",
+      photo: "https://images.unsplash.com/photo-1538370965046-79c0d6907d47",
+      notes: "Stellar atmospheric parameters indicate excellent visibility. Dust lanes beautifully prominent near the core.",
+      timestamp: new Date().toISOString()
+    }
+  ];
+  localStorage.setItem('spaceexplorer_observations', JSON.stringify(defaultObservations));
+}
+
+/**
+ * Gets all logged observations from storage
+ * @returns {Array} Array of observation objects
+ */
+function getObservations() {
+  try {
+    return JSON.parse(localStorage.getItem('space_observations')) || [];
+  } catch (e) {
+    console.error("Failed to parse observations storage", e);
+    return [];
+  }
+}
+
+/**
+ * Saves a new observation entry to storage
+ * @param {Object} observationData 
+ * @returns {Object} The newly created observation object
+ */
+function saveObservation(observationData) {
+  const observations = getObservations();
+  
+  const newLog = {
+    id: "obs-" + Date.now(),
+    targetName: observationData.targetName || "Unknown Object",
+    objectType: observationData.objectType || "Other",
+    constellation: observationData.constellation || "Unknown",
+    equipment: observationData.equipment || "N/A",
+    bortleScale: parseInt(observationData.bortleScale) || 5,
+    seeing: observationData.seeing || "Fair",
+    coordinates: observationData.coordinates || "N/A",
+    notes: observationData.notes || "",
+    photoUrl: observationData.photoUrl || "",
+    date: observationData.date || new Date().toISOString()
+  };
+  
+  observations.unshift(newLog); // Put latest observation at the top
+  localStorage.setItem('space_observations', JSON.stringify(observations));
+  return newLog;
+}
+
+/**
+ * Mock data for tonight's targets (Stellarium API/algorithm simulation)
+ */
+const tonightsSkySuggestions = [
+  { name: "Ring Nebula (M57)", type: "Deep Sky", mag: "8.8", visibility: "Optimal after 23:00" },
+  { name: "Jupiter", type: "Planet", mag: "-2.2", visibility: "Bright East Horizon" },
+  { name: "Hercules Cluster (M13)", type: "Deep Sky", mag: "5.8", visibility: "High Zenith" }
+];
