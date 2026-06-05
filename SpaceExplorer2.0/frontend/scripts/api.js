@@ -1,120 +1,261 @@
 // ============================================================
-// SpaceExplorer 2.0 — API Layer
-// Handles local mock states and live remote server downlinks
+// SpaceExplorer 2.0 — Production Integrated API Layer
+// Fully connected with Fatima's Advanced MongoDB Backend Architecture
 // ============================================================
 
-// ── Missions ──────────────────────────────────────────────────────────
-function getMissions() { return [...MISSIONS]; }
-function getMission(id) { return MISSIONS.find(m => m.id === id); }
-function addMission(data) {
-  const m = { ...data, id: Date.now(), status: 'planning', progress: 0 };
-  MISSIONS.push(m);
-  saveData('se_missions', MISSIONS);
-  return m;
-}
-function updateMission(id, data) {
-  const idx = MISSIONS.findIndex(m => m.id === id);
-  if (idx !== -1) { MISSIONS[idx] = { ...MISSIONS[idx], ...data }; saveData('se_missions', MISSIONS); }
-}
-function deleteMission(id) {
-  MISSIONS = MISSIONS.filter(m => m.id !== id);
-  saveData('se_missions', MISSIONS);
+const SERVER_URL = "http://localhost:5000/api";
+
+/**
+ * Helper function to safely attach JWT bearer tokens 
+ * from localStorage for protected backend checkpoints.
+ */
+function getHeaders() {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : ''
+  };
 }
 
-// ── Astronauts ────────────────────────────────────────────────────────
-function getAstronauts() { return [...ASTRONAUTS]; }
-function getAstronaut(id) { return ASTRONAUTS.find(a => a.id === id); }
-function addAstronaut(data) {
-  const a = { ...data, id: Date.now(), status: 'standby', missionId: null, leadership: 65, technical: 70, physical: 75 };
-  ASTRONAUTS.push(a);
-  saveData('se_astronauts', ASTRONAUTS);
-  return a;
-}
-function deleteAstronaut(id) {
-  ASTRONAUTS = ASTRONAUTS.filter(a => a.id !== id);
-  saveData('se_astronauts', ASTRONAUTS);
+// ── Auth Routes Pipeline (/api/auth) ───────────────────────────────────
+
+async function loginUserAPI(email, password) {
+  const response = await fetch(`${SERVER_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Login gateway rejected credentials.');
+  
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  return data;
 }
 
-// ── Discoveries ───────────────────────────────────────────────────────
-function getDiscoveries() { return [...DISCOVERIES]; }
-function addDiscovery(data) {
-  const d = { ...data, id: Date.now(), date: new Date().toISOString().split('T')[0] };
-  DISCOVERIES.push(d);
-  saveData('se_discoveries', DISCOVERIES);
-  return d;
-}
-function deleteDiscovery(id) {
-  DISCOVERIES = DISCOVERIES.filter(d => d.id !== id);
-  saveData('se_discoveries', DISCOVERIES);
-}
-
-// ── Observations ──────────────────────────────────────────────────────
-function getObservations() { return [...OBSERVATIONS]; }
-function addObservation(data) {
-  const o = { ...data, id: Date.now() };
-  OBSERVATIONS.push(o);
-  saveData('se_observations', OBSERVATIONS);
-  return o;
-}
-function deleteObservation(id) {
-  OBSERVATIONS = OBSERVATIONS.filter(o => o.id !== id);
-  saveData('se_observations', OBSERVATIONS);
+async function registerUserAPI(username, email, password, role = 'spaceViewer') {
+  const response = await fetch(`${SERVER_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, email, password, role })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Registration pipeline tracking error.');
+  
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  return data;
 }
 
-// ── Live Launch Services & Remote Configuration ───────────────────────
-var SPACEDEVS_BASE_URL = "https://ll.thespacedevs.com/2.2.0";
+async function getAuthMeAPI() {
+  const response = await fetch(`${SERVER_URL}/auth/me`, {
+    headers: getHeaders()
+  });
+  if (!response.ok) throw new Error('Session authentication check expired.');
+  return await response.json();
+}
+
+
+// ── Missions Routes Pipeline (/api/missions) ───────────────────────────
+
+async function getMissions(statusFilter = '') {
+  const url = statusFilter ? `${SERVER_URL}/missions?status=${statusFilter}` : `${SERVER_URL}/missions`;
+  const response = await fetch(url);
+  return await response.json();
+}
+
+async function getMission(id) {
+  const response = await fetch(`${SERVER_URL}/missions/${id}`);
+  return await response.json();
+}
+
+async function addMission(data) {
+  const response = await fetch(`${SERVER_URL}/missions`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data) // Backend automatically runs transaction & awards 30 points
+  });
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || 'Failed to initialize mission log.');
+  return resData;
+}
+
+async function updateMission(id, data) {
+  const response = await fetch(`${SERVER_URL}/missions/${id}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify(data)
+  });
+  return await response.json();
+}
+
+async function deleteMission(id) {
+  const response = await fetch(`${SERVER_URL}/missions/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders()
+  });
+  return await response.json();
+}
+
+
+// ── Astronauts Routes Pipeline (/api/astronauts) ───────────────────────
+
+async function getAstronauts(page = 1) {
+  // Lab 8: Connects with Skip + Limit backend pagination
+  const response = await fetch(`${SERVER_URL}/astronauts?page=${page}`);
+  const payload = await response.json();
+  return payload.data || payload; 
+}
+
+async function getAstronaut(id) {
+  const response = await fetch(`${SERVER_URL}/astronauts/${id}`);
+  return await response.json();
+}
+
+async function addAstronaut(data) {
+  const response = await fetch(`${SERVER_URL}/astronauts`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data) // Runs structural insertion transaction + awards 10 points
+  });
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || 'Failed to register new crew profile.');
+  return resData;
+}
+
+async function assignAstronautToMission(astronautId, missionId) {
+  // Lab 10 & 11: Invokes atomic full assignment transaction with pessimistic locks
+  const response = await fetch(`${SERVER_URL}/astronauts/${astronautId}/assign`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify({ missionId })
+  });
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || 'Lock acquisition/assignment failed.');
+  return resData;
+}
+
+async function deleteAstronaut(id) {
+  const response = await fetch(`${SERVER_URL}/astronauts/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders()
+  });
+  return await response.json();
+}
+
+
+// ── Discoveries Routes Pipeline (/api/discoveries) ─────────────────────
+
+async function getDiscoveries() {
+  const response = await fetch(`${SERVER_URL}/discoveries`);
+  return await response.json();
+}
+
+async function addDiscovery(data) {
+  const response = await fetch(`${SERVER_URL}/discoveries`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data) // Triggers transaction & awards 50 points
+  });
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || 'Failed to record discovery timeline block.');
+  return resData;
+}
+
+async function deleteDiscovery(id) {
+  const response = await fetch(`${SERVER_URL}/discoveries/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders()
+  });
+  return await response.json();
+}
+
+
+// ── Observations Routes Pipeline (/api/observations) ───────────────────
+
+async function getObservations() {
+  const response = await fetch(`${SERVER_URL}/observations`, {
+    headers: getHeaders() // Automatically returns data filtered by current logged-in user id
+  });
+  return await response.json();
+}
+
+async function addObservation(data) {
+  const response = await fetch(`${SERVER_URL}/observations`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data) // Runs database entry transaction & awards 20 points
+  });
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || 'Failed to commit tracking data.');
+  return resData;
+}
+
+async function deleteObservation(id) {
+  const response = await fetch(`${SERVER_URL}/observations/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders()
+  });
+  return await response.json();
+}
+
+
+// ── Leaderboard Component Route (/api/leaderboard) ─────────────────────
+
+async function getLeaderboard() {
+  // Lab 12: Reads directly from the materialized view data pool
+  const response = await fetch(`${SERVER_URL}/leaderboard`);
+  return await response.json();
+}
+
+
+// ── Global Search Engine Cross Routing (/api/search) ───────────────────
+
+async function runGlobalSearch(queryTerm) {
+  // Lab 7 & 8: Executes composite text index query search over distinct databases
+  if (!queryTerm) return { missions: [], crew: [], discoveries: [] };
+  const response = await fetch(`${SERVER_URL}/search?q=${encodeURIComponent(queryTerm)}`);
+  return await response.json();
+}
+
+
+// ── Live Launch Services & Telemetry Optimization ─────────────────────
+
+var SPACEDEVS_BASE_URL = "http://localhost:5000/api/telemetry";
 var NASA_APOD_URL = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
 var FOLLOWED_LAUNCHES = JSON.parse(localStorage.getItem('se_followed_launches')) || [];
 
-/**
- * Asynchronous fetch handler for live upcoming orbital spaceflights
- */
 async function fetchUpcomingLaunchesAPI() {
   try {
-    const response = await fetch(SPACEDEVS_BASE_URL + "/launch/upcoming/?limit=5");
+    const response = await fetch(`${SPACEDEVS_BASE_URL}/launches`);
     if (!response.ok) throw new Error("Network downlink variance anomaly detected.");
     const data = await response.json();
     
-    return data.results.map(function(l) {
+    return data.map(function(l) {
       return {
         id: l.id || String(Math.random()),
-        mission: (l.name && l.name.includes('|')) ? l.name.split('|')[1].trim() : (l.name || "Telemetry Payload"),
-        rocket: (l.rocket && l.rocket.configuration) ? l.rocket.configuration.full_name : "Operational Launch Vehicle",
-        site: l.pad ? l.pad.name : "Global Spaceport Facility",
-        provider: l.launch_service_provider ? l.launch_service_provider.name : "Space Carrier Enterprise",
-        netDate: l.net || new Date().toISOString(),
-        status: (l.status && l.status.abbrev) ? l.status.abbrev.toLowerCase() : "go",
-        missionType: l.mission ? l.mission.type : "Orbital Mission",
-        description: l.mission ? l.mission.description : "No alternative mission brief filed."
+        mission: l.mission || "Telemetry Payload",
+        rocket: l.rocket || "Operational Launch Vehicle",
+        site: l.site || "Global Spaceport Facility",
+        provider: l.provider || "Space Carrier Enterprise",
+        netDate: l.netDate || new Date().toISOString(),
+        status: l.status || "go",
+        missionType: "Orbital Mission",
+        description: l.description || "No alternative mission brief filed."
       };
     });
   } catch (error) {
-    console.warn("Live API stream unavailable. Routing processing traffic to standby array metrics.", error);
+    console.warn("Live API stream offline. Re-routing processing traffic to standby array metrics.", error);
     return getUpcomingLaunchesFallback();
   }
 }
 
-/**
- * Asynchronous fetch handler for recent past space flight entries
- */
 async function fetchRecentLaunchesAPI() {
   try {
-    const response = await fetch(SPACEDEVS_BASE_URL + "/launch/previous/?limit=10");
+    const response = await fetch(`${SPACEDEVS_BASE_URL}/previous`);
     if (!response.ok) throw new Error("Historical telemetry uplink timed out.");
     const data = await response.json();
-    
-    return data.results.map(function(l) {
-      return {
-        id: l.id || String(Math.random()),
-        mission: (l.name && l.name.includes('|')) ? l.name.split('|')[1].trim() : (l.name || "Past Mission Log entry"),
-        rocket: (l.rocket && l.rocket.configuration) ? l.rocket.configuration.full_name : "Falcon 9 Block 5",
-        site: l.pad ? l.pad.name : "Cape Canaveral SLC-40",
-        provider: l.launch_service_provider ? l.launch_service_provider.name : "Space Agency",
-        netDate: l.net || new Date().toISOString(),
-        status: "success",
-        outcome: l.mission ? l.mission.description : "Mission objectives reached, orbital injection finalized cleanly."
-      };
-    });
+    return data;
   } catch (error) {
     console.warn("Recent history downlink offline. Deploying fallback log objects.", error);
     return [
@@ -132,9 +273,6 @@ async function fetchRecentLaunchesAPI() {
   }
 }
 
-/**
- * Asynchronous retrieval handler for NASA Astronomy Picture of the Day
- */
 async function fetchNasaApod() {
   try {
     const response = await fetch(NASA_APOD_URL);
@@ -149,20 +287,6 @@ async function fetchNasaApod() {
     };
   }
 }
-
-// Synchronous legacy functions left intact to prevent breaking downstream components
-function getLaunches() { return [...LAUNCHES]; }
-function getUpcomingLaunches() { return LAUNCHES.filter(l => l.status !== 'launched'); }
-function getRecentLaunches() { return LAUNCHES.filter(l => l.status === 'launched'); }
-
-function toggleFollowLaunch(id) {
-  const idx = FOLLOWED_LAUNCHES.indexOf(id);
-  if (idx === -1) FOLLOWED_LAUNCHES.push(id);
-  else FOLLOWED_LAUNCHES.splice(idx, 1);
-  saveData('se_followed_launches', FOLLOWED_LAUNCHES);
-}
-
-function isFollowed(id) { return FOLLOWED_LAUNCHES.includes(id); }
 
 function getUpcomingLaunchesFallback() {
   return [
@@ -191,28 +315,37 @@ function getUpcomingLaunchesFallback() {
   ];
 }
 
-// ── Leaderboard ───────────────────────────────────────────────────────
-function getLeaderboard() { return [...LEADERBOARD].sort((a, b) => b.points - a.points); }
-
-// ── Stats ─────────────────────────────────────────────────────────────
-function getStats() {
-  const missions = getMissions();
-  const completed = missions.filter(m => m.status === 'completed').length;
-  const total = missions.length;
-  return {
-    activeMissions: missions.filter(m => m.status === 'active').length,
-    crewDeployed: getAstronauts().filter(a => a.status === 'deployed').length,
-    discoveriesLogged: getDiscoveries().length,
-    launchSuccessRate: total ? Math.round(((total - missions.filter(m => m.status === 'failed').length) / total) * 100) : 94
-  };
+function toggleFollowLaunch(id) {
+  const idx = FOLLOWED_LAUNCHES.indexOf(id);
+  if (idx === -1) FOLLOWED_LAUNCHES.push(id);
+  else FOLLOWED_LAUNCHES.splice(idx, 1);
+  localStorage.setItem('se_followed_launches', JSON.stringify(FOLLOWED_LAUNCHES));
 }
 
-// ── Timeline Events ───────────────────────────────────────────────────
-function getTimelineEvents() {
-  const events = [];
-  getMissions().slice(-3).forEach(m => events.push({ type: 'mission', icon: '🚀', text: `Mission <b>${m.name}</b> — status: ${m.status.toUpperCase()}`, date: m.launchDate, color: 'var(--accent-primary)' }));
-  getDiscoveries().slice(-2).forEach(d => events.push({ type: 'discovery', icon: '🔬', text: `Discovery logged: <b>${d.title}</b>`, date: d.date, color: 'var(--accent-pulse)' }));
-  getObservations().slice(-2).forEach(o => events.push({ type: 'obs', icon: '🔭', text: `Observation: <b>${o.object}</b> — ${o.location}`, date: o.datetime ? o.datetime.split('T')[0] : '2026-03-10', color: 'var(--accent-warn)' }));
-  return events.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+function isFollowed(id) { return FOLLOWED_LAUNCHES.includes(id); }
+
+
+// ── Stats Calculations (Lab 5 & 6 Unified Aggregate Output) ──────────
+
+async function getStats() {
+  try {
+    // Fetches live metrics computed on the server database using Aggregation Pipelines
+    const response = await fetch(`${SERVER_URL}/missions/stats-dashboard`);
+    if (response.ok) return await response.json();
+  } catch (e) {
+    console.warn("Analytics server polling offline. Initializing template parameters.");
+  }
+  return { activeMissions: 2, crewDeployed: 4, discoveriesLogged: 12, launchSuccessRate: 96 };
 }
 
+async function getTimelineEvents() {
+  try {
+    const response = await fetch(`${SERVER_URL}/missions/timeline-feed`);
+    if (response.ok) return await response.json();
+  } catch (e) {
+    console.warn("Timeline synchronization timeline delayed.");
+  }
+  return [
+    { type: 'mission', icon: '🚀', text: 'Mission <b>Ares V</b> — Status: PLANNING', date: '2026-06-15', color: 'var(--accent-primary)' }
+  ];
+}

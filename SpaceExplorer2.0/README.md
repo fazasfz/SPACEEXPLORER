@@ -383,3 +383,64 @@ frontend/
 ### Final quality bar
 
 When complete, the frontend should look indistinguishable from a real SaaS product that a space-tech startup would ship. If it looks like a student project or a template, it is not done. Every empty state, every loading state, every error state must be handled with a real UI. The star field must be running, the timers must be ticking, the charts must be animated, and navigating between pages must feel fluid and instantaneous.
+
+
+---
+
+---
+
+## 🛠️ Contributions by Fatima
+
+Successfully handled the full-stack upgrade for SpaceExplorer 2.0, turning it from a static frontend mockup into a fully functional web application connected to a live backend and database. 
+
+Below is the simple, detailed breakdown of every single task that is performed:
+
+### 🔒 MODULE 4: Building the Authentication System
+* **Cleared Up the Project Structure:** Organized the project workspace by explicitly separating the frontend user interface files from the new backend operations folder.
+* **Made a Backend Folder:** Generated a dedicated directory named `backend` to house all server-side mechanics, server settings, and route data pipelines.
+* **Initialized a Node Project:** Launched the backend server using the terminal and installed the five critical packages required to run our secure pipeline:
+  * **Express:** The web server framework that handles all network traffic.
+  * **Mongoose:** The direct connector bridge linking our code to MongoDB Compass.
+  * **Bcryptjs:** Safely encrypts and hashes user passwords before saving them.
+  * **Jsonwebtoken (JWT):** Issues a digital, secure pass token when users successfully log in.
+  * **Nodemon:** Automatically restarts the local server every time code changes are saved.
+* **Set Up Environment Variables (`.env`):** Created a hidden configuration file named `.env` inside the backend folder to securely store our secret database keys away from public code.
+* **Created the Server Entry Point (`server.js`):** Drafted the core `server.js` file to setup our local network port (`5000`), boot up the database connection, and handle incoming user traffic.
+* **Created the User Model (`models/User.js`):** Built a new subfolder named `models` and created `User.js` to define the blueprint mapping, telling MongoDB exactly what a user profile should look like (Email, Password, and Creation Date).
+* **Wrote the Auth Logic (`routes/auth.js`):** Built a subfolder named `routes` and created `auth.js` to manage register and login requests. It encrypts raw user passwords using Bcrypt for new signups and dishes out secure passes via JWT during logins.
+* **Link the Routes in `server.js`:** Added the registration and login routing lines directly inside the main `server.js` file to activate all signup endpoints.
+* **Fire Up the Backend Server:** Replaced the default startup settings inside `package.json` with standard developer scripts (`"dev": "nodemon server.js"`), allowing the server to be launched smoothly via the terminal using `npm run dev`.
+* **Look Inside MongoDB Compass:** Logged into MongoDB Compass desktop software application and verified that our active server automatically generated the fresh `spaceexplorer` database layout.
+* **Connected the Frontend `login.js` Gateway:** Rewrote your teammate's frontend script code to hook it directly to our live database api endpoints instead of using fake mock data:
+  * **Removed `setTimeout` Blocks:** Replaced all artificial loading delays with actual `await fetch()` calls to stream real network requests.
+  * **Error Handling Integrations:** Linked bad password or pre-existing email alerts to the frontend theme’s custom toast configuration (`showToast(error.message, 'error')`) so mistakes pop up cleanly on screen.
+  * **Preserved Graphic Utility:** Kept every role selection card, password visibility toggle eye icon, and styling utility completely intact so the visual template design didn't break.
+
+---
+
+### 🌌 MODULE 3: Sci-Fi Worldbuilder Mode
+* **Create Universe Model (`models/Universe.js`):** Created a structural schema blueprint inside our backend models folder to tell the database how to store fictional universe parameters (tracking Character Name, Workspace Name, Specialty, and Lore Backstories).
+* **Create Universe Routes (`routes/universe.js`):** Developed a brand new API router channel on the backend to listen for incoming character details sent from the frontend user interface.
+* **Link Universe Routes:** Connected the new worldbuilding route files into the root `server.js` file to authorize database traffic channels.
+* **Setup the Frontend `crew.js` Script:** Reconfigured the crew roster page logic to bridge the gap between frontend actions and our MongoDB collection:
+  * **Connected Form Data:** Updated the `openAddAstronaut()` layout window to gather user-typed input data, structure it as a JSON package object, and post it to our backend using an asynchronous network fetch.
+  * **Local Storage Safety Check:** Integrated an identity guard loop that reads the active browser session, preventing unauthenticated visitors from messing with the worldbuilding environment.
+  * **Dynamically Injected Menu Buttons:** Wrote a custom script within `renderCrewToolbar()` that checks the interface layout for action elements. If missing, it automatically creates and injects a `🌌 REGISTER SCI-FI CREW` button directly onto the screen toolbar.
+  * **Synced Interface Reloads:** Hooked the form submission up to automatically trigger a table refresh on screen, showing new items instantly while saving records permanently to MongoDB Compass.
+
+---
+
+### 🛰️ MODULE 2: Live Telemetry Tracking Mode
+* **Create Telemetry Route (`routes/telemetry.js`):** Drafted a live tracking broadcast router inside the backend to stream simulated launch liftoff arrays, flight data trackers, and timeline sequences.
+* **Register Telemetry in `server.js`:** Added the telemetry script pathways inside the central server engine layout along with our other core routers.
+* **Modified Global Communications Layer (`api.js`):** Swapped the global data streaming pathways on the frontend over to our local processing hub to counter external rate constraints:
+  * **Redirected Base Paths:** Swapped the legacy variable `SPACEDEVS_BASE_URL` to route traffic down to our local server (`http://localhost:5000/api/telemetry`).
+  * **Refactored Launch Fetches:** Cleaned up the `fetchUpcomingLaunchesAPI()` function to parse our internal data layout, cleanly feeding active countdown parameters and metrics directly into the frontend main dashboard ticker loop.
+
+---
+
+### 🧪 Verification & Final Testing Protocol
+* **User Lifecycle Verification:** Successfully registered a brand new test account using the screen signup panel, watched it generate an authenticated entry, and logged in using those active credentials.
+* **Full-Stack Database Validation:** Switched to the Crew view tab, verified that the dynamically injected button opened the workspace popup, filled out full fictional worldbuilder stats, and verified that clicking save immediately pushed a permanent character document directly into MongoDB Compass under our active collections!
+
+---

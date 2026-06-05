@@ -183,39 +183,47 @@ function assignAstronaut(id) {
        renderCrewGrid();
      }}]);
 }
+// ============================================================
+// SpaceExplorer 2.0 — Sci-Fi Worldbuilder Database Connection
+// ============================================================
+const UNIVERSE_API = 'http://localhost:5000/api/universe';
 
 function openAddAstronaut() {
-  openPanel('Register New Astronaut', `
+  openPanel('Register Universe Character / Crew', `
     <form id="add-astronaut-form">
       <div class="form-group">
-        <label class="form-label">Full Name</label>
-        <input class="form-input" name="name" placeholder="Dr. Jane Smith" required>
+        <label class="form-label">Character / Crew Name</label>
+        <input class="form-input" name="name" placeholder="Dr. Jane Smith or Alien Unit-01" required>
       </div>
       <div class="form-group">
-        <label class="form-label">Rank</label>
+        <label class="form-label">Rank / Classification</label>
         <select class="form-select" name="rank" required>
-          <option value="">Select rank</option>
-          <option value="trainee">Trainee</option>
-          <option value="pilot">Pilot</option>
-          <option value="specialist">Specialist</option>
-          <option value="captain">Captain</option>
-          <option value="commander">Commander</option>
+          <option value="">Select hierarchy</option>
+          <option value="trainee">Trainee / Cadet</option>
+          <option value="pilot">Pilot / Navigator</option>
+          <option value="specialist">Specialist / Scientist</option>
+          <option value="captain">Captain / Bounty Hunter</option>
+          <option value="commander">Fleet Commander</option>
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Specialty</label>
+        <label class="form-label">Fictional Universe Workspace Name</label>
+        <input class="form-input" id="universe-workspace-name" name="universeName" placeholder="e.g., Milky Way Opera, Kepler Conflict" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Species / Group Specialty</label>
         <select class="form-select" name="specialty" required>
           <option value="">Select specialty</option>
-          <option value="navigation">Navigation</option>
-          <option value="engineering">Engineering</option>
-          <option value="science">Science</option>
-          <option value="medical">Medical</option>
-          <option value="geology">Geology</option>
-          <option value="communications">Communications</option>
+          <option value="navigation">Navigation / Hyperdrive</option>
+          <option value="engineering">Quantum Engineering</option>
+          <option value="science">Exo-Science / Lore</option>
+          <option value="medical">Bio-Medical</option>
+          <option value="geology">Asteroid Mining</option>
+          <option value="communications">Deep-Space Comms</option>
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Experience (years)</label>
+        <label class="form-label">Experience Cycle (Years Active)</label>
         <div class="form-stepper">
           <button type="button" class="stepper-btn" onclick="stepChange('exp-input',-1)">−</button>
           <input class="stepper-input" id="exp-input" name="experience" type="number" value="1" min="0" max="50">
@@ -223,21 +231,73 @@ function openAddAstronaut() {
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Nationality</label>
-        <input class="form-input" name="nationality" placeholder="e.g., USA, India, Japan">
+        <label class="form-label">Home Sector / Origin Galaxy</label>
+        <input class="form-input" name="nationality" placeholder="e.g., Orion Arm, Sector-7G">
       </div>
       <div class="form-group">
-        <label class="form-label">Bio</label>
-        <textarea class="form-textarea" name="bio" placeholder="Brief biography..."></textarea>
+        <label class="form-label">Fictional Character Lore / Biography</label>
+        <textarea class="form-textarea" name="bio" placeholder="Describe their sci-fi backstory, neural implants, or motivations..."></textarea>
       </div>
-      <button type="submit" class="btn btn-primary btn-full">👨‍🚀 REGISTER ASTRONAUT</button>
-    </form>`, (fd) => {
-      const data = Object.fromEntries(fd);
-      data.experience = parseInt(data.experience) || 1;
-      addAstronaut(data);
-      closePanel();
-      showToast(`${data.name} registered!`, 'success');
-      renderCrewGrid();
+      <button type="submit" class="btn btn-primary btn-full">🌌 COMMIT TO WORLD ARCHIVE</button>
+    </form>`, async (fd) => {
+      // 1. Convert form elements into standard object properties
+      const formData = Object.fromEntries(fd);
+      
+      // 2. Browser Storage se dynamic dynamic active session profile handle karein
+      const loggedInUser = JSON.parse(localStorage.getItem('user'));
+      if (!loggedInUser || !loggedInUser.id) {
+         showToast('Error: Please log in to connect to the sci-fi workspace pipeline.', 'error');
+         return;
+      }
+
+      // 3. Form fields se mapping data extract karein aur payload banayein
+      const universePayload = {
+         userId: loggedInUser.id,
+         name: formData.universeName,
+         description: `Universe sector tracking character profile for origin location: ${formData.nationality || 'Unknown Zone'}. Notes: ${formData.bio || 'None'}`,
+         genre: 'Sci-Fi Worldbuild',
+         crew: [{
+            name: formData.name,
+            role: formData.rank + ' of ' + formData.specialty,
+            species: formData.nationality || 'Alien Unknown'
+         }]
+      };
+
+      try {
+         // 4. Live network streaming payload pipeline via database connection hit karein
+         const response = await fetch(`${UNIVERSE_API}/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(universePayload)
+         });
+
+         const data = await response.json();
+
+         if (!response.ok) {
+            throw new Error(data.message || 'Database rejected universe parameters.');
+         }
+
+         // Form code sync reset and feedback UI flow
+         closePanel();
+         showToast(`🌌 Fictional Universe "${formData.universeName}" & Crew Character synced into MongoDB Compass!`, 'success');
+         
+         // Fallback legacy UI system updates
+         if (typeof addAstronaut === 'function') {
+            addAstronaut({
+               name: formData.name,
+               rank: formData.rank,
+               specialty: formData.specialty,
+               experience: parseInt(formData.experience) || 1,
+               nationality: formData.nationality,
+               bio: formData.bio
+            });
+         }
+         renderCrewGrid();
+
+      } catch (error) {
+         showToast(error.message || 'Could not pipeline data to backend server.', 'error');
+         console.error('Worldbuilder Pipeline sync issue:', error);
+      }
     });
 }
 
@@ -249,4 +309,28 @@ function deleteAstronautAction(id) {
     showToast(`${a.name} removed`, 'warning');
     renderCrewGrid();
   });
+}
+
+function renderCrewToolbar() {
+  const searchEl = document.getElementById('crew-search-input');
+  const rankEl   = document.getElementById('crew-rank-filter');
+  const gridBtn  = document.getElementById('crew-view-grid');
+  const tableBtn = document.getElementById('crew-view-table');
+
+  if (searchEl) searchEl.addEventListener('input', debounce(() => { crewSearch = searchEl.value; crewPage = 1; renderCrewGrid(); }, 300));
+  if (rankEl)   rankEl.addEventListener('change', () => { crewRankFilter = rankEl.value; crewPage = 1; renderCrewGrid(); });
+  if (gridBtn)  gridBtn.addEventListener('click', () => { crewView = 'grid'; gridBtn.classList.add('active'); tableBtn.classList.remove('active'); renderCrewGrid(); });
+  if (tableBtn) tableBtn.addEventListener('click', () => { crewView = 'table'; tableBtn.classList.add('active'); gridBtn.classList.remove('active'); renderCrewGrid(); });
+
+  // Safety Injection: Check and insert the Worldbuilder Pipeline activator button
+  const toolbarContainer = document.querySelector('.crew-toolbar') || (tableBtn ? tableBtn.parentElement : null);
+  if (toolbarContainer && !document.getElementById('dynamic-add-crew-btn')) {
+    const addBtn = document.createElement('button');
+    addBtn.id = 'dynamic-add-crew-btn';
+    addBtn.className = 'btn btn-primary';
+    addBtn.style.marginLeft = 'auto';
+    addBtn.innerHTML = '🌌 REGISTER SCI-FI CREW';
+    addBtn.onclick = openAddAstronaut;
+    toolbarContainer.appendChild(addBtn);
+  }
 }
