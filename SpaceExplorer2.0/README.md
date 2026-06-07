@@ -318,7 +318,7 @@ Even though the backend auth (Module 4) isn't built yet, build the full UI.
 
 ### Data layer (JavaScript)
 
-Since the backend is not connected yet, build a full **mock data layer** in a file called `data.js`:
+Since the backend is not connected at first so we build a full **mock data layer** in a file called `data.js`:
 
 - `MOCK_MISSIONS` array: 8 missions with realistic names (Artemis IX, Hermes-7, Project Cassini-2, etc.), varied statuses, dates, destinations, and crew sizes
 - `MOCK_ASTRONAUTS` array: 12 astronauts with names, ranks, specialties, experience years, and assigned missions
@@ -329,11 +329,11 @@ Since the backend is not connected yet, build a full **mock data layer** in a fi
 
 All pages must read from these arrays. All add forms must push to the arrays and re-render the relevant list. This makes the UI fully functional end-to-end before the backend exists. Use `localStorage` to persist any user-added data between page refreshes.
 
-Build a simple `api.js` file with functions like `getMissions()`, `addMission(data)`, `getAstronauts()` etc. that currently just read/write the mock data. When the real backend is ready, only this file needs to change — the pages never call fetch directly.
+Then we built a simple `api.js` file with functions like `getMissions()`, `addMission(data)`, `getAstronauts()` etc. that currently just read/write the mock data. When the real backend got ready, only this file needed to be changed — the pages never call fetch directly.
 
 ---
 
-### File structure
+###  INTIAL File structure
 
 ```
 frontend/
@@ -379,68 +379,193 @@ frontend/
 - CSS custom properties for everything — no hardcoded color hex values in component CSS
 
 ---
+## CONTRIBUTIONS
 
-### Final quality bar
+## Contributions by Umaima
 
-When complete, the frontend should look indistinguishable from a real SaaS product that a space-tech startup would ship. If it looks like a student project or a template, it is not done. Every empty state, every loading state, every error state must be handled with a real UI. The star field must be running, the timers must be ticking, the charts must be animated, and navigating between pages must feel fluid and instantaneous.
+### Module 1 — Live Launch Tracker Mode
+* **Integrated Core APIs:** Fully connected the application infrastructure with the **SpaceDevs Launch Library 2 API** (free, no authentication token required) and the official **NASA APOD API** (using public infrastructure developer keys).
+* **Enhanced Hero Countdown System:** Programmed an asynchronous mechanism that locks onto the nearest actual upcoming launch scheduled in the SpaceDevs registry. Features a silent fallback pipeline that switches to local data grids if external downlinks encounter variance anomalies.
+* **Dynamic Launch Monitoring Grid:** Re-wired the visual interface cards to parse real orbital flight parameters. Maps dynamic network status codes cleanly onto the existing HUD visual badge systems (`GO FOR LAUNCH`, `HOLD`, `SCRUBBED`, `LAUNCHED`).
+* **Session Persistence Engine:** Implemented a targeted "Follow Launch" bookmark toggle that saves followed launch IDs securely within browser `localStorage`.
+* **NASA APOD Cinematic Banner:** Built an asynchronous header frame that fetches the verified Astronomy Picture of the Day to serve as a high-fidelity visual background strip, integrated with custom **Tippy.js** tooltips to render descriptive space metadata on cursor hover.
+* **Unified Data Core Extensions (`api.js`):**
+  * `getLaunches()`: Performs live asynchronous calls to the SpaceDevs network; handles downstream structural merging with static parameters upon fetch failure profiles.
+  * `followLaunch(id)`: Commits targeted flight record identifiers directly to browser memory.
+  * `getFollowedLaunches()`: Reconverges local records to return arrays of followed identifiers.
+  * `getAPOD()`: Fetches NASA astronomy streams to output custom objects containing telemetry image links and explanations.
+###  Module 2 — Observation Log for Amateur Astronomers
+* **Integrated Mapping Layers:** Linked the **Stellarium Web API** alongside the hardware-native browser **Geolocation API**.
+* **Smart "Tonight's Sky" Interface:** Created an automated security prompt allowing users to provide spatial location coordinates. The application fires these metrics over to the Stellarium endpoint to list visible tracking targets above the current horizon, with fallbacks handling denied permissions.
+* **Stellarium Space Chart Overlay:** Engineered an asynchronous mapping module that loads an interactive Stellarium workplace viewport directly within an HTML frame element, centered precisely on user location parameters.
+* **Advanced Logging Data Formatures:**
+  * *Media Compression Array:* Encodes local telemetry image attachments as optimized base64 byte clusters, enabling standalone storage handling inside local storage frameworks.
+  * *Bortle Sky-Scale Engine:* Built a custom sliding input system scale (1–9) with event hooks that watch updates to trigger real-time styling color swatch transitions (shifting dynamically from deep orange-amber tones down to near-black space canvas depths).
+  * *Automated Hardware Hooks:* Configured spatial form cells to intercept latitude/longitude streams from browser variables while preserving full manual overriding capacity.
+* **Enhanced Visual Roster & Sidebars:**
+  * Formatted observation components to showcase visual thumbnail media alongside crisp coordinate blocks rendered in **JetBrains Mono** text.
+  * Overhauled telemetry summary widgets to compute statistics live by combining hardcoded assets with local parameters.
+* **Unified Data Core Extensions (`api.js`):**
+  * `getObservations()`: Blends baseline data structures with custom browser-recorded instances.
+  * `addObservation(data)`: Pushes log objects to local persistent layers and fires render cascades.
+  * `getVisibleTonight(lat, lon)`: Contacts the Stellarium cluster to retrieve current target arrays.
 
+---
+## 🛠️ Contributions by Amjad Hussain
+
+Successfully engineered, refactored, and deployed the comprehensive frontend integration layer and client-side communication framework for SpaceExplorer 2.0. This critical intervention completely bridged the gap between static user interfaces and live backend database engines, stabilizing structural data streams and optimizing complex rendering cycles across the entire operational application.
+
+### 1. Enterprise-Grade Live Interface Data Synchronization
+* **Full-Stack Connection of Mission Control Hubs:** Successfully re-wired and mapped the comprehensive visual architecture of the primary user control rooms—including the high-density Mission Control Dashboard, the dynamic Active Missions Grid, the historical Discovery Log, and the operational Crew Roster panel—directly into live backend REST API pipelines connected to the active MongoDB database cluster.
+* **Elimination of Legacy Placeholder Ecosystems:** Wrote custom asynchronous rendering protocols to overhaul old static placeholder parameters, ensuring that the second the application initializes, client views dynamically populate, or "hydrate," using authentic, real-time telemetry datasets fetched straight from active server environments.
+* **Persistent State Synchronization Integration:** Built explicit network interceptors within the core client scripts to map operational database schemas onto the user tracking layers, successfully preserving critical real-time application updates across user browser sessions.
+
+### 2. High-Precision Viewport Data Sanitization & Error Resolution
+* **Extermination of Structural Interface Anomalies:** Diagnosed and resolved critical frontend string mutation bugs and asynchronous lifecycle race conditions that previously broke component layouts by outputting ugly, unparsed properties like `NaN`, raw technical errors, or generic text values such as "Unnamed Mission."
+* **Advanced Backend Property Field Realignment:** Conducted precise matching audits between deep, nested database BSON object configurations and frontend UI object models. This targeted realignment guarantees that mission identities, detailed astronaut operational rank configurations, specific destination strings, and high-precision spatial coordinate blocks seamlessly map down to the exact text elements inside individual visual interface cards without visual misalignment.
+* **User Interface Integrity Guardrails:** Implemented conditional visual sanitizers that scrub raw data feeds before they hit template compilers, providing a flawless visual design polish where technical elements and layout grids maintain their rigid proportions.
+  
+###  3. Advanced Optimization, Stability, and Fault-Tolerant Resilience Filters
+* **Async Promise Synchronization & Rendering Control:** Completely reconstructed erratic client-side loops by forcing the browser rendering engine to wait patiently for multi-stage asynchronous network payload operations to fully resolve (`Promise.all()`). This strict sequence eliminates visual rendering glitches, screen flicker, and half-drawn cards on high-latency connection grids.
+* **Network Interruption Fault Tolerance & Safe Degradation:** Developed robust fallback layers and error catch blocks directly inside the main data fetching routes (`api.js`). If the primary local server goes offline or encounters a network database disconnect, the client-side system isolates the failure gracefully—preventing a catastrophic browser crash or page freeze by dynamically spinning up structural safe parameters, operational backup arrays, or clean, intentional zero states (`0`) on dashboard panels.
+* **UI Animation Loop Controls:** Connected newly stabilized data states with the system's easing counter functions and Chart.js animations, guaranteeing that visual graphs and numerical countdown tickers trigger their animations smoothly only *after* real database numbers have successfully cleared the network pipeline.
+
+### 4. Strategic Project Management & Version Control Governance
+* **Advanced Version Control Strategy & Workspace Isolation:** Actively supervised multi-branch local development environments, tracking and keeping critical frontend user experience updates completely separate from structural backend routing frameworks to prevent code regression.
+* **Git Pipeline Refactoring & Repository Merging:** Headed the systematic tracking, conflict resolution, and clean code integration needed to merge the comprehensive frontend stability package (`SpaceExplorer-Fixes`) back into the primary production master branch workspace. This minimized overlapping developer modifications, cleaned up untracked binaries, and delivered a production-ready, highly stable full-stack platform.
 
 ---
 
----
+## Contributions by Fatima
 
-## 🛠️ Contributions by Fatima
+Successfully orchestrated the full-stack evolution of SpaceExplorer 2.0, transforming a decoupled frontend mockup into a dynamic, production-ready web application integrated with a live server and database pipeline.
+### MODULE 4: Building the Authentication System
 
-Successfully handled the full-stack upgrade for SpaceExplorer 2.0, turning it from a static frontend mockup into a fully functional web application connected to a live backend and database. 
+* **Strategic Workspace Restructuring:** Reconfigured the entire project root architecture by permanently isolating user-facing frontend directory trees away from backend infrastructure configurations.
+* **Backend Architecture Core:** Established the centralized `backend/` engine folder containing dedicated sub-environments for database schemas, pipeline settings, and network endpoint maps.
+* **Server Dependency Ecosystem Initialization:** Deployed the backend cluster using the package console to install five pivotal system components:
+  * **Express:** The cornerstone framework configured to listen, route, and manage all incoming network app requests.
+  * **Mongoose:** The primary asynchronous software bridge mapping code rules directly to our MongoDB Compass database.
+  * **Bcryptjs:** Securely locks and hashes raw user account passwords using heavy math before they ever get committed to storage.
+  * **Jsonwebtoken (JWT):** Generates and dispenses unique digital security login session tokens to authenticate user requests.
+  * **Nodemon:** Developer automation tool that dynamically monitors system files and restarts the local app whenever changes are saved.
+* **Environment Variable Safety Closures:** Created a hidden `.env` system profile file within the server core to keep secure local network ports and sensitive cryptographic database keys masked from open version tracking.
+* **Central Server Assembly (`server.js`):** Drafted the absolute gateway file to declare our local connection port (`5000`), spin up global database connectivity rules, and intercept incoming client data packets.
+* **Rigid User Identity Blueprinting (`models/User.js`):** Programmed a structured table map outline defining absolute rules for profile accounts, telling MongoDB exactly how to model incoming users (storing Email, hashed Password strings, and automated account Registration Dates).
+* **Authentication Route Routing (`routes/auth.js`):** Engineered specialized database communication channels managing user onboarding and login flows—applying Bcrypt encryption protections during new signups and issuing persistent JWT passes for legitimate logins.
+* **Active Endpoint Integration:** Tied authentication route channels directly back into the primary `server.js` framework script to open up system signup networks.
+* **Development Processing Activation:** Custom-configured the default package launcher parameters (`"dev": "nodemon server.js"`) to enable seamless terminal initializations using `npm run dev`.
+* **Database State Verification:** Utilized MongoDB Compass to physically inspect data tables, confirming the server cleanly generated the active `spaceexplorer` database layout.
+* **Frontend Gateway Synchronization (`login.js`):** Deeply overhauled old script files on the user interface to disconnect fake simulation arrays and point client inputs directly to live backend endpoints:
+  * *Legacy Delay Refactoring:* Excised artificial `setTimeout` loading wrappers, replacing them with live, immediate `await fetch()` operations to handle real-time server streams.
+  * *Alert Communication Mapping:* Captured server failure logs (pre-existing registration profiles or invalid password errors) and linked them directly to the client's visual toast alert modules (`showToast(error.message, 'error')`) for crystal-clear interface feedback.
+  * *Visual Layout Protection:* Safely refactored inner communication loops while leaving frontend layout cards, role picker options, and password eye icons perfectly unmarred.
 
-Below is the simple, detailed breakdown of every single task that is performed:
+### MODULE 3: Sci-Fi Worldbuilder Mode
 
-### 🔒 MODULE 4: Building the Authentication System
-* **Cleared Up the Project Structure:** Organized the project workspace by explicitly separating the frontend user interface files from the new backend operations folder.
-* **Made a Backend Folder:** Generated a dedicated directory named `backend` to house all server-side mechanics, server settings, and route data pipelines.
-* **Initialized a Node Project:** Launched the backend server using the terminal and installed the five critical packages required to run our secure pipeline:
-  * **Express:** The web server framework that handles all network traffic.
-  * **Mongoose:** The direct connector bridge linking our code to MongoDB Compass.
-  * **Bcryptjs:** Safely encrypts and hashes user passwords before saving them.
-  * **Jsonwebtoken (JWT):** Issues a digital, secure pass token when users successfully log in.
-  * **Nodemon:** Automatically restarts the local server every time code changes are saved.
-* **Set Up Environment Variables (`.env`):** Created a hidden configuration file named `.env` inside the backend folder to securely store our secret database keys away from public code.
-* **Created the Server Entry Point (`server.js`):** Drafted the core `server.js` file to setup our local network port (`5000`), boot up the database connection, and handle incoming user traffic.
-* **Created the User Model (`models/User.js`):** Built a new subfolder named `models` and created `User.js` to define the blueprint mapping, telling MongoDB exactly what a user profile should look like (Email, Password, and Creation Date).
-* **Wrote the Auth Logic (`routes/auth.js`):** Built a subfolder named `routes` and created `auth.js` to manage register and login requests. It encrypts raw user passwords using Bcrypt for new signups and dishes out secure passes via JWT during logins.
-* **Link the Routes in `server.js`:** Added the registration and login routing lines directly inside the main `server.js` file to activate all signup endpoints.
-* **Fire Up the Backend Server:** Replaced the default startup settings inside `package.json` with standard developer scripts (`"dev": "nodemon server.js"`), allowing the server to be launched smoothly via the terminal using `npm run dev`.
-* **Look Inside MongoDB Compass:** Logged into MongoDB Compass desktop software application and verified that our active server automatically generated the fresh `spaceexplorer` database layout.
-* **Connected the Frontend `login.js` Gateway:** Rewrote your teammate's frontend script code to hook it directly to our live database api endpoints instead of using fake mock data:
-  * **Removed `setTimeout` Blocks:** Replaced all artificial loading delays with actual `await fetch()` calls to stream real network requests.
-  * **Error Handling Integrations:** Linked bad password or pre-existing email alerts to the frontend theme’s custom toast configuration (`showToast(error.message, 'error')`) so mistakes pop up cleanly on screen.
-  * **Preserved Graphic Utility:** Kept every role selection card, password visibility toggle eye icon, and styling utility completely intact so the visual template design didn't break.
+* **Fictional Data Schema Framing (`models/Universe.js`):** Structured an expansive tracking blueprint file specifying data metrics for fantasy lore characters (organizing Character Identity, Base Group Names, Field Specialties, and Deep Backstory Text blocks).
+* **Worldbuilding API Creation (`routes/universe.js`):** Wrote a fresh database endpoint router channel on the backend to receive customized character logs sent from frontend entry screens.
+* **Route Configuration Merging:** Registered the universe processing logic components inside the global `server.js` orchestrator script to validate inbound data streams.
+* **Crew Roster UI Interfacing (`crew.js`):** Recoded client-side roster actions to sync form submissions directly with our active MongoDB collections:
+  * *Asynchronous Payload Posting:* Reconfigured the `openAddAstronaut()` dynamic layout popup window to assemble form input variables into clean JSON objects, posting them over network fetch protocols directly to the server database.
+  * *Session Verification Loop:* Wired up an inline identity token validator tracking active browser states to lock down worldbuilding variables from unverified page visitors.
+  * *Automated Toolbar Button Injection:* Formulated a smart script inside `renderCrewToolbar()` that checks for interface tools and automatically injects a `🌌 REGISTER SCI-FI CREW` button directly onto the screen toolbar if not present.
+  * *Instant Viewport Refreshing:* Connected new entries to trigger rapid list re-renders, causing newly registered database characters to appear instantly on tables while saving data permanently to MongoDB.
 
----
+### MODULE 2: Live Telemetry Tracking Mode
 
-### 🌌 MODULE 3: Sci-Fi Worldbuilder Mode
-* **Create Universe Model (`models/Universe.js`):** Created a structural schema blueprint inside our backend models folder to tell the database how to store fictional universe parameters (tracking Character Name, Workspace Name, Specialty, and Lore Backstories).
-* **Create Universe Routes (`routes/universe.js`):** Developed a brand new API router channel on the backend to listen for incoming character details sent from the frontend user interface.
-* **Link Universe Routes:** Connected the new worldbuilding route files into the root `server.js` file to authorize database traffic channels.
-* **Setup the Frontend `crew.js` Script:** Reconfigured the crew roster page logic to bridge the gap between frontend actions and our MongoDB collection:
-  * **Connected Form Data:** Updated the `openAddAstronaut()` layout window to gather user-typed input data, structure it as a JSON package object, and post it to our backend using an asynchronous network fetch.
-  * **Local Storage Safety Check:** Integrated an identity guard loop that reads the active browser session, preventing unauthenticated visitors from messing with the worldbuilding environment.
-  * **Dynamically Injected Menu Buttons:** Wrote a custom script within `renderCrewToolbar()` that checks the interface layout for action elements. If missing, it automatically creates and injects a `🌌 REGISTER SCI-FI CREW` button directly onto the screen toolbar.
-  * **Synced Interface Reloads:** Hooked the form submission up to automatically trigger a table refresh on screen, showing new items instantly while saving records permanently to MongoDB Compass.
-
----
-
-### 🛰️ MODULE 2: Live Telemetry Tracking Mode
-* **Create Telemetry Route (`routes/telemetry.js`):** Drafted a live tracking broadcast router inside the backend to stream simulated launch liftoff arrays, flight data trackers, and timeline sequences.
-* **Register Telemetry in `server.js`:** Added the telemetry script pathways inside the central server engine layout along with our other core routers.
-* **Modified Global Communications Layer (`api.js`):** Swapped the global data streaming pathways on the frontend over to our local processing hub to counter external rate constraints:
-  * **Redirected Base Paths:** Swapped the legacy variable `SPACEDEVS_BASE_URL` to route traffic down to our local server (`http://localhost:5000/api/telemetry`).
-  * **Refactored Launch Fetches:** Cleaned up the `fetchUpcomingLaunchesAPI()` function to parse our internal data layout, cleanly feeding active countdown parameters and metrics directly into the frontend main dashboard ticker loop.
+* **Simulated Telemetry Feeds (`routes/telemetry.js`):** Programmed a specialized backend streaming pipeline to broadcast consistent arrays of liftoff events, imaginary space flights, and historical timelines.
+* **Telemetry Registry Setup:** Mounted the telemetry tracking channels alongside core data networks inside the baseline server code.
+* **Global API Channel Redirection (`api.js`):** Redirected front-end network endpoints onto our newly launched local server system to avoid rate limits and third-party downtime:
+  * *Local Base Routing:* Swapped the historical `SPACEDEVS_BASE_URL` tracking endpoint to target internal local host parameters (`http://localhost:5000/api/telemetry`).
+  * *Launch Fetch Re-wiring:* Restructured the `fetchUpcomingLaunchesAPI()` communication functions to pull from internal arrays, channeling real-time counters and parameters cleanly into the homepage live ticker grid.
 
 ---
 
-### 🧪 Verification  Protocol
-* **User Lifecycle Verification:** Successfully registered a brand new test account using the screen signup panel, watched it generate an authenticated entry, and logged in using those active credentials.
-* **Full-Stack Database Validation:** Switched to the Crew view tab, verified that the dynamically injected button opened the workspace popup, filled out full fictional worldbuilder stats, and verified that clicking save immediately pushed a permanent character document directly into MongoDB Compass under our active collections!
+## Production Backend Architecture & System Integration 
+
+The application has been converted from a decoupled mock-driven mockup into an enterprise-grade full-stack platform. The core storage and query infrastructure maps directly across advanced MongoDB database engine protocols:
+
+```text
+backend/
+├── config/           # Database orchestrators (Mongoose Atlas/Compass link profiles)
+├── models/           # Lab 5 MongoDB rigid schemas with advanced internal indexing 
+├── middleware/       # Identity evaluation locks (Bearer JWT extraction filters)
+└── routes/           # High-isolation transactions, aggregation engines, and text searches
+---
+```
+## Production Database Implementations:
+
+### 1. Advanced Structural Schemas & Database Seeding
+Designed strict validation shapes across 7 central database tables via Mongoose: User, Mission, Astronaut, Discovery, Observation, Leaderboard, and MissionUpdatesLog.
+
+Written an isolated database transaction seeding layer (seed.js) utilizing atomic deleteMany and optimization insertMany commands to reset cluster spaces and seed operational datasets.
+
+### 2. Aggregation Pipelines & Dashboard Telemetry
+Constructed cross-collection lookup operations using $lookup and $unwind matrices to join document parameters without risking normalization anomalies.
+
+Developed server-side mathematical pipelines to compute real-time system metrics (such as evaluating operational mission success frequencies and multi-source timeline logs).
+
+### 3. Indexing Strategies & Query Tuning Performance
+Built single-field and compound indexes ({ status: 1, launchDate: -1 }) to minimize memory footprints and optimize system sorting routines.
+
+Generated complex multi-field MongoDB Text Indexes across strings to handle comprehensive cross-category search queries.
+
+Integrated verification protocols via execution profiling tools (.explain('executionStats')) to mathematically confirm query path transitions from resource-heavy Collection Scans (COLLSCAN) to lightning-fast Index Scans (IXSCAN).
+
+Applied native cursor mechanics utilizing server-side skip() and limit() restrictions to deploy data pagination (locked at a 10-row viewport threshold) across personnel tables.
+
+### 4. High-Isolation Transactions & Concurrency Safeguards 
+Optimistic Concurrency Controls: Injected document version states (version: { type: Number }) into core player models to block competing write conflicts during parallel points allocation actions.
+
+Pessimistic Concurrency Framework: Maintained strict state flags (locked, lockOwner, lockTime) during transactional resource assignment steps to isolate profiles via database-level locks, entirely preventing race conditions.
+
+### 5. Abstracted Database Views & Role-Based Security
+Configured isolated database view pipelines (activeCrewView, publicDiscoveriesView) to expose sanitized fields to client-side components without compromising core properties.
+
+Implemented Role-Based Access Control (RBAC) across distinct identity paradigms (spaceAdmin, spaceViewer, spaceOwner) to authorize structural operations on protected routes.
 
 ---
+###  Advanced Database Management — Backend Labs (Labs 5–12)
+The course labs are implemented in this project.
+Handled the complete architecture and execution of the production database lifecycle, implementing enterprise-grade structural optimizations directly within the cluster environments:
+
+#### Lab 5 — Multi-Collection Integration & Seeding Engine
+Implemented by Umaima Mumtaz
+* Formatted primary structural database blueprints across multiple distinct collection assets using strict Mongoose configurations.
+* Programmed an atomic initialization workflow (`seed.js`) that safely clears stale historic footprints and fires heavy `insertMany` pipelines to populate the MongoDB cluster with realistic sample records instantaneously.
+
+#### Lab 6 — Advanced Server Aggregation Pipelines
+Implemented by Umaima Mumtaz
+* Engineered complex data pipelines using `$lookup` and `$unwind` utilities to blend individual collection outputs natively without duplicating data.
+* Relocated core visual tracking calculations from client layers onto the primary cluster engine, instantly computing live dashboard numbers (active operations and platform success margins).
+
+#### Lab 7 — Performance Tuning & Multi-Field Indexing
+Implemented by Umaima Mumtaz
+* Implemented single-field and high-performance **Compound Indexes** (`{ status: 1, launchDate: -1 }`) on heavily traversed collection queries to bypass slow linear search loops.
+* Set up global database **Text Indexes** on descriptions and properties to enable instant, natural string searches across datasets.
+
+#### Lab 8 — Query Diagnostics & Cursor Pagination
+Implemented by Syeda Fatima Zahra
+* Conducted system performance profiling using the query execution tool (`.explain('executionStats')`) to verify optimized database navigation paths, successfully moving query runs from Collection Scans (`COLLSCAN`) to efficient Index Scans (`IXSCAN`).
+* Built server-controlled pagination streams by binding explicit cursor parameters (`skip()` and `limit()`) directly on data feeds, locking view records strictly to a clean 10-row limit threshold.
+
+#### Lab 9 — Data Lifecycle Rules & Validation Enforcements
+Implemented by Syeda Fatima Zahra
+* Configured strict schema validator guards on the backend to filter input properties, forcing incoming payloads to strictly match core dataset constraints before touching active collection zones.
+* Implemented automatic cleanup sequences to manage temporary operational records, preserving system state sanitization over long runtimes.
+
+#### Lab 10 — High-Isolation Transactions & Atomic Pipelines
+Implemented by Amjad Hussain
+* Developed secure, multi-document transactional pipelines to wrap dependent storage updates into standalone, all-or-nothing operations.
+* Managed clean rollback fallback states to neutralize structural runtime variances, ensuring no partial data corruption occurs during system updates.
+
+#### Lab 11 — Concurrency Fail-Safes & Locking Mechanisms
+Implemented by Amjad Hussain
+* **Optimistic Locking:** Integrated micro-version tracking checks (`__v` versioning keys) on active player shapes to catch and bounce overlapping parallel write actions securely.
+* **Pessimistic Locking:** Embedded specific resource state parameters (`locked`, `lockOwner`) directly within mission documents to block concurrent modifications on active assets during high-traffic intervals.
+
+#### Lab 12 — Database Views & Role-Based Access Control (RBAC)
+Implemented by Amjad Hussain
+* Deployed abstract MongoDB read-only Views (`activeCrewView`, `publicDiscoveriesView`) to decouple secure core records from open tracking feeds.
+* Enforced strict server-side Role-Based middleware masks to intercept route queries, verifying user operational roles (`spaceAdmin`, `spaceViewer`) before exposing protected structural controllers.
