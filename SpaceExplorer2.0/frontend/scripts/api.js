@@ -227,23 +227,14 @@ var FOLLOWED_LAUNCHES = JSON.parse(localStorage.getItem('se_followed_launches'))
 
 async function fetchUpcomingLaunchesAPI() {
   try {
-    const response = await fetch(`${SPACEDEVS_BASE_URL}/launches`);
+    const response = await fetch(`${SERVER_URL}/missions`);
     if (!response.ok) throw new Error("Network downlink variance anomaly detected.");
-    const data = await response.json();
     
-    return data.map(function(l) {
-      return {
-        id: l.id || String(Math.random()),
-        mission: l.mission || "Telemetry Payload",
-        rocket: l.rocket || "Operational Launch Vehicle",
-        site: l.site || "Global Spaceport Facility",
-        provider: l.provider || "Space Carrier Enterprise",
-        netDate: l.netDate || new Date().toISOString(),
-        status: l.status || "go",
-        missionType: "Orbital Mission",
-        description: l.description || "No alternative mission brief filed."
-      };
-    });
+    // Yahan hum data ko map/filter karne ke bajaye seedha return kar rahe hain
+    // Taake MongoDB ka asli data (name, destination, etc.) dashboard tak pohnche
+    const data = await response.json();
+    return data; 
+
   } catch (error) {
     console.warn("Live API stream offline. Re-routing processing traffic to standby array metrics.", error);
     return getUpcomingLaunchesFallback();
@@ -329,11 +320,14 @@ function isFollowed(id) { return FOLLOWED_LAUNCHES.includes(id); }
 
 async function getStats() {
   try {
-    // Fetches live metrics computed on the server database using Aggregation Pipelines
     const response = await fetch(`${SERVER_URL}/missions/stats-dashboard`);
-    if (response.ok) return await response.json();
+    if (response.ok) {
+      const res = await response.json();
+      // Yahan hum ensure kar rahe hain ke agar res.data hai toh woh nikaal lein
+      return res.data || res; 
+    }
   } catch (e) {
-    console.warn("Analytics server polling offline. Initializing template parameters.");
+    console.warn("Analytics server polling offline.");
   }
   return { activeMissions: 2, crewDeployed: 4, discoveriesLogged: 12, launchSuccessRate: 96 };
 }
