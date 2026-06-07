@@ -53,6 +53,8 @@ This repository contains the evolution of SpaceExplorer. The legacy version (V1)
 ---
 
 ## Contributions
+
 Version 2.0 Full-Stack Upgrade: Developed by Syeda Fatima, Umaima Mumtaz, and Amjad Hussain, covering the transition from static mockups to a fully functional application, including the authentication module, database integration (MongoDB), and API development.
 Version 1.0 : Developed by Syeda Fatima Zahra, Amna Maryam Fatima, and Noor-ul-ain Jellani Gujjar
+
 ---
