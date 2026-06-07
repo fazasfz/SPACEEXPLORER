@@ -1,5 +1,5 @@
 
-## SpaceExplorer 2.0 — Full Frontend Requirements
+## SpaceExplorer 2.0 — Full Frontend, Backend & Integration Requirements
 
 ---
 
