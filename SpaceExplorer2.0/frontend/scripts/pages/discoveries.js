@@ -1,26 +1,36 @@
 // ============================================================
-// SpaceExplorer 2.0 — Discoveries Page
+// SpaceExplorer 2.0 — Discoveries Page (Fixed Async Integration)
 // ============================================================
 
 let discTypeFilters = new Set(['geological','astronomical','biological','chemical','technological']);
 let discSearch = '';
 
-function initDiscoveries() {
-  updateDiscoveryHero();
-  renderDiscoveries();
+// 1. ADDED ASYNC to main initializer
+async function initDiscoveries() {
+  await updateDiscoveryHero();
+  await renderDiscoveries();
   initDiscoveryFilters();
-  startDiscoveryTicker();
+  await startDiscoveryTicker();
 }
 
-function updateDiscoveryHero() {
+async function updateDiscoveryHero() {
   const el = document.getElementById('total-discoveries');
-  if (el) animateCounter(el, getDiscoveries().length, 1200);
+  if (!el) return;
+  const res = await getDiscoveries();
+  const discoveries = Array.isArray(res) ? res : (res.data || []);
+  if (typeof animateCounter === 'function') {
+    animateCounter(el, discoveries.length, 1200);
+  } else {
+    el.textContent = discoveries.length;
+  }
 }
 
-function startDiscoveryTicker() {
+async function startDiscoveryTicker() {
   const ticker = document.getElementById('discovery-ticker');
   if (!ticker) return;
-  const items = getDiscoveries().map(d => `✦ ${d.title} — ${d.discoveredBy} — ${formatDate(d.date)}`);
+  const res = await getDiscoveries();
+  const discoveries = Array.isArray(res) ? res : (res.data || []);
+  const items = discoveries.map(d => `✦ ${d.title || 'Unknown'} — ${d.discoveredBy || 'System'} — ${formatDate(d.createdAt || d.date || new Date())}`);
   ticker.textContent = items.join('   ·   ');
 }
 
@@ -34,44 +44,61 @@ function initDiscoveryFilters() {
   });
 
   const searchEl = document.getElementById('disc-search');
-  if (searchEl) searchEl.addEventListener('input', debounce(() => { discSearch = searchEl.value; renderDiscoveries(); }, 300));
+  if (searchEl && typeof debounce === 'function') {
+    searchEl.addEventListener('input', debounce(() => { discSearch = searchEl.value; renderDiscoveries(); }, 300));
+  }
 }
 
 const TYPE_ICONS = { geological: '⛰️', astronomical: '🌟', biological: '🧬', chemical: '⚗️', technological: '💡' };
 const TYPE_COLORS = { geological: 'rgba(255,107,53,0.15)', astronomical: 'rgba(255,215,0,0.12)', biological: 'rgba(0,255,204,0.12)', chemical: 'rgba(200,150,255,0.12)', technological: 'rgba(0,212,255,0.12)' };
 
-function renderDiscoveries() {
+// 2. ADDED ASYNC to Grid Renderer
+async function renderDiscoveries() {
   const container = document.getElementById('discoveries-grid');
   if (!container) return;
-  let items = getDiscoveries().filter(d =>
-    discTypeFilters.has(d.type) &&
-    (!discSearch || d.title.toLowerCase().includes(discSearch.toLowerCase()) || d.discoveredBy.toLowerCase().includes(discSearch.toLowerCase()) || d.location.toLowerCase().includes(discSearch.toLowerCase()))
-  );
+  
+  const res = await getDiscoveries();
+  const allDiscoveries = Array.isArray(res) ? res : (res.data || []);
+
+  let items = allDiscoveries.filter(d => {
+    const typeMatch = d.type ? discTypeFilters.has(d.type.toLowerCase()) : false;
+    const searchMatch = !discSearch || 
+      (d.title && d.title.toLowerCase().includes(discSearch.toLowerCase())) || 
+      (d.discoveredBy && d.discoveredBy.toLowerCase().includes(discSearch.toLowerCase())) || 
+      (d.location && d.location.toLowerCase().includes(discSearch.toLowerCase()));
+    return typeMatch && searchMatch;
+  });
 
   if (!items.length) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔬</div><div class="empty-title">No Discoveries</div><div class="empty-desc">Adjust your filters or log a new discovery.</div></div>';
     return;
   }
 
-  container.innerHTML = items.map((d, i) => `
+  container.innerHTML = items.map((d, i) => {
+    const discId = d._id || d.id;
+    const sig = typeof d.significance === 'string' ? parseInt(d.significance) : (d.significance || 3);
+    const dateStr = formatDate(d.createdAt || d.date || new Date());
+    const typeStr = d.type ? d.type.toLowerCase() : 'geological';
+
+    return `
     <div class="discovery-card-wrap animate-in" style="animation-delay:${i*60}ms">
       <div class="card card-brackets" style="padding:var(--space-lg)">
-        <div class="discovery-type-icon" style="background:${TYPE_COLORS[d.type]||'rgba(0,212,255,0.1)'}">${TYPE_ICONS[d.type]||'🔬'}</div>
-        <div class="discovery-title">${d.title}</div>
-        <div class="discovery-coords">📍 ${d.location}${d.lat !== undefined && d.lat !== 0 ? ` · LAT: ${d.lat}° | LON: ${d.lon}°` : ''}</div>
+        <div class="discovery-type-icon" style="background:${TYPE_COLORS[typeStr]||'rgba(0,212,255,0.1)'}">${TYPE_ICONS[typeStr]||'🔬'}</div>
+        <div class="discovery-title">${d.title || 'Untitled'}</div>
+        <div class="discovery-coords">📍 ${d.location || 'Unknown'}${d.lat !== undefined && d.lat !== 0 ? ` · LAT: ${d.lat}° | LON: ${d.lon}°` : ''}</div>
         <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:var(--space-sm)">
-          By <span style="color:var(--accent-pulse)">${d.discoveredBy}</span> · ${formatDate(d.date)}
+          By <span style="color:var(--accent-pulse)">${d.discoveredBy || 'Unknown'}</span> · ${dateStr}
         </div>
-        ${renderStars(d.significance || 3)}
-        <div class="discovery-desc" id="desc-${d.id}">${d.description}</div>
-        <button class="read-more" onclick="toggleDiscDesc(${d.id},this)">Read more</button>
+        ${typeof renderStars === 'function' ? renderStars(sig) : `<div style="color:gold">Rating: ${sig}/5</div>`}
+        <div class="discovery-desc" id="desc-${discId}">${d.description || 'No description provided.'}</div>
+        <button class="read-more" onclick="toggleDiscDesc('${discId}',this)">Read more</button>
         <div style="display:flex;justify-content:flex-end;margin-top:var(--space-sm);gap:var(--space-xs)">
-          <button class="btn btn-ghost btn-sm" onclick="shareDiscovery(${d.id})">📋 SHARE</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteDiscoveryAction(${d.id})">×</button>
+          <button class="btn btn-ghost btn-sm" onclick="shareDiscovery('${discId}')">📋 SHARE</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDiscoveryAction('${discId}')">×</button>
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function toggleDiscDesc(id, btn) {
@@ -81,26 +108,39 @@ function toggleDiscDesc(id, btn) {
   btn.textContent = el.classList.contains('expanded') ? 'Read less' : 'Read more';
 }
 
-function shareDiscovery(id) {
-  const d = getDiscoveries().find(x => x.id === id);
+// 3. ADDED ASYNC to Actions
+async function shareDiscovery(id) {
+  const res = await getDiscoveries();
+  const discoveries = Array.isArray(res) ? res : (res.data || []);
+  const d = discoveries.find(x => (x._id || x.id) === id);
   if (!d) return;
-  const text = `🔬 DISCOVERY: ${d.title}\n📍 Location: ${d.location}\nBy: ${d.discoveredBy}\nDate: ${formatDate(d.date)}\n${d.description.substring(0,200)}...`;
-  navigator.clipboard.writeText(text).then(() => showToast('Discovery summary copied to clipboard!', 'success')).catch(() => showToast('Copy failed', 'error'));
+  const text = `🔬 DISCOVERY: ${d.title}\n📍 Location: ${d.location}\nBy: ${d.discoveredBy}\nDate: ${formatDate(d.createdAt || d.date || new Date())}\n${(d.description || '').substring(0,200)}...`;
+  navigator.clipboard.writeText(text).then(() => {
+    if (typeof showToast === 'function') showToast('Discovery summary copied to clipboard!', 'success');
+  }).catch(() => {
+    if (typeof showToast === 'function') showToast('Copy failed', 'error');
+  });
 }
 
-function deleteDiscoveryAction(id) {
-  const d = getDiscoveries().find(x => x.id === id);
-  confirmAction(`Delete discovery <b>${d?.title || id}</b>?`, () => {
-    deleteDiscovery(id);
-    showToast('Discovery deleted', 'warning');
-    updateDiscoveryHero();
-    renderDiscoveries();
-    startDiscoveryTicker();
-  });
+async function deleteDiscoveryAction(id) {
+  const res = await getDiscoveries();
+  const discoveries = Array.isArray(res) ? res : (res.data || []);
+  const d = discoveries.find(x => (x._id || x.id) === id);
+  
+  if (typeof confirmAction === 'function') {
+    confirmAction(`Delete discovery <b>${d?.title || id}</b>?`, async () => {
+      await deleteDiscovery(id);
+      if (typeof showToast === 'function') showToast('Discovery deleted', 'warning');
+      updateDiscoveryHero();
+      renderDiscoveries();
+      startDiscoveryTicker();
+    });
+  }
 }
 
 function openAddDiscovery() {
   let sigVal = 3;
+  if (typeof openPanel !== 'function') return;
   openPanel('Log New Discovery', `
     <form id="add-discovery-form">
       <div class="form-group">
@@ -138,15 +178,19 @@ function openAddDiscovery() {
         <textarea class="form-textarea" name="description" placeholder="Detailed description of the discovery..." required style="min-height:120px"></textarea>
       </div>
       <button type="submit" class="btn btn-primary btn-full">🔬 LOG DISCOVERY</button>
-    </form>`, (fd) => {
+    </form>`, async (fd) => {
       const data = Object.fromEntries(fd);
       data.significance = parseInt(data.significance) || 3;
-      addDiscovery(data);
-      closePanel();
-      showToast(`Discovery "${data.title}" logged!`, 'success');
-      updateDiscoveryHero();
-      renderDiscoveries();
-      startDiscoveryTicker();
+      try {
+        await addDiscovery(data);
+        if (typeof closePanel === 'function') closePanel();
+        if (typeof showToast === 'function') showToast(`Discovery "${data.title}" logged!`, 'success');
+        updateDiscoveryHero();
+        renderDiscoveries();
+        startDiscoveryTicker();
+      } catch(e) {
+        console.error(e);
+      }
     });
 }
 

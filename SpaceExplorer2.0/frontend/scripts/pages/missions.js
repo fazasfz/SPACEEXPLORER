@@ -1,5 +1,5 @@
 // ============================================================
-// SpaceExplorer 2.0 — Missions Page
+// SpaceExplorer 2.0 — Missions Page (Fixed API Integration)
 // ============================================================
 
 let missionsFilter = 'all';
@@ -20,49 +20,74 @@ function initMissionsFilterTabs() {
   });
 }
 
-function renderMissionsGrid() {
+// 1. ADDED ASYNC: Ab data pehle fetch hoga phir render hoga
+async function renderMissionsGrid() {
   const container = document.getElementById('missions-grid');
   if (!container) return;
-  let missions = getMissions();
-  if (missionsFilter !== 'all') missions = missions.filter(m => m.status === missionsFilter);
 
-  if (!missions.length) {
-    renderEmptyState('missions-grid', 'No Missions Found', 'No missions match the selected filter. Create a new one!');
-    return;
+  try {
+    // API se data anay ka wait karo
+    const missionsResponse = await getMissions();
+    const astronautsResponse = await getAstronauts();
+
+    // Data ko securely array mein transform karo
+    let missions = Array.isArray(missionsResponse) ? missionsResponse : (missionsResponse.data || []);
+    let astronauts = Array.isArray(astronautsResponse) ? astronautsResponse : (astronautsResponse.data || []);
+
+    if (missionsFilter !== 'all') {
+      missions = missions.filter(m => m.status === missionsFilter);
+    }
+
+    if (!missions.length) {
+      container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 40px;">No missions match the selected filter. Create a new one!</div>';
+      return;
+    }
+
+    container.innerHTML = missions.map((m, i) => {
+      // MongoDB fields handling
+      const missionName = m.name || m.mission || "Unnamed Mission";
+      const missionId = m._id || m.id; 
+      const status = m.status || 'planning';
+
+      const hue1 = Math.abs(missionName.charCodeAt(0) * 7) % 360;
+      const hue2 = Math.abs((missionName.charCodeAt(1) || 45) * 13) % 360;
+      
+      // Crew data check
+      const crew = astronauts.filter(a => a.missionId === missionId);
+      const avatars = crew.slice(0, 3).map(a => `<span class="crew-avatar" style="background:${hashColor(a.name)}">${getInitials(a.name)}</span>`).join('');
+      const extra = crew.length > 3 ? `<span class="crew-avatar crew-avatar-more">+${crew.length-3}</span>` : '';
+
+      // Date fallback
+      const formattedDate = (typeof formatDate === 'function' && m.launchDate) ? formatDate(m.launchDate) : (m.launchDate ? new Date(m.launchDate).toLocaleDateString() : 'TBD');
+
+      return `
+      <div class="mission-card-wrap animate-in" style="animation-delay:${i * 60}ms">
+        <div class="mission-card-hdr" style="background:linear-gradient(135deg,hsl(${hue1},60%,12%),hsl(${hue2},70%,18%))">
+          <span class="mission-card-hdr-title">${missionName}</span>
+        </div>
+        <div class="mission-card-bdy">
+          <div class="mission-meta">
+            <span class="badge ${status}"><span class="status-dot ${status}"></span>${status.toUpperCase()}</span>
+            <span class="badge ${m.priority || 'medium'}">${(m.priority || 'medium').toUpperCase()}</span>
+          </div>
+          <div class="mission-destination" style="margin-bottom:8px">📍 ${m.destination || 'Deep Space'} · 📅 ${formattedDate}</div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px">⏱ ${m.duration || 'N/A'}</div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${m.progress || 0}%"></div></div>
+          <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent-primary);margin-bottom:8px">${m.progress || 0}%</div>
+          <div class="crew-stack">${avatars}${extra}
+            <span style="font-size:0.7rem;color:var(--text-dim);margin-left:8px;align-self:center">${crew.length || m.crewSize || 0} crew</span>
+          </div>
+          <div class="mission-actions">
+            <button class="btn btn-secondary btn-sm" onclick="openMissionDetail('${missionId}')">DETAILS</button>
+            <button class="btn btn-ghost btn-sm" onclick="openEditMission('${missionId}')">EDIT</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteMissionAction('${missionId}')" style="margin-left:auto">DELETE</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (error) {
+    console.error("Error rendering missions:", error);
   }
-
-  container.innerHTML = missions.map((m, i) => {
-    const hue1 = Math.abs(m.name.charCodeAt(0) * 7) % 360;
-    const hue2 = Math.abs((m.name.charCodeAt(1) || 45) * 13) % 360;
-    const crew = getAstronauts().filter(a => a.missionId === m.id);
-    const avatars = crew.slice(0, 3).map(a => `<span class="crew-avatar" style="background:${hashColor(a.name)}">${getInitials(a.name)}</span>`).join('');
-    const extra = crew.length > 3 ? `<span class="crew-avatar crew-avatar-more">+${crew.length-3}</span>` : '';
-
-    return `
-    <div class="mission-card-wrap animate-in" style="animation-delay:${i * 60}ms">
-      <div class="mission-card-hdr" style="background:linear-gradient(135deg,hsl(${hue1},60%,12%),hsl(${hue2},70%,18%))">
-        <span class="mission-card-hdr-title">${m.name}</span>
-      </div>
-      <div class="mission-card-bdy">
-        <div class="mission-meta">
-          <span class="badge ${m.status}"><span class="status-dot ${m.status}"></span>${m.status.toUpperCase()}</span>
-          <span class="badge ${m.priority}">${m.priority.toUpperCase()}</span>
-        </div>
-        <div class="mission-destination" style="margin-bottom:8px">📍 ${m.destination} · 📅 ${formatDate(m.launchDate)}</div>
-        <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px">⏱ ${m.duration}</div>
-        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${m.progress}%"></div></div>
-        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent-primary);margin-bottom:8px">${m.progress}%</div>
-        <div class="crew-stack">${avatars}${extra}
-          <span style="font-size:0.7rem;color:var(--text-dim);margin-left:8px;align-self:center">${crew.length || m.crewSize} crew</span>
-        </div>
-        <div class="mission-actions">
-          <button class="btn btn-secondary btn-sm" onclick="openMissionDetail(${m.id})">DETAILS</button>
-          <button class="btn btn-ghost btn-sm" onclick="openEditMission(${m.id})">EDIT</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteMissionAction(${m.id})" style="margin-left:auto">DELETE</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
 }
 
 function openAddMission() {
@@ -114,17 +139,22 @@ function openAddMission() {
       <button type="submit" class="btn btn-primary btn-full">🚀 CREATE MISSION</button>
     </form>`;
 
-  openPanel('New Mission Brief', formHTML, (formData) => {
+  // Async create form submission
+  openPanel('New Mission Brief', formHTML, async (formData) => {
     const data = Object.fromEntries(formData);
     data.crewSize = parseInt(data.crewSize) || 4;
-    addMission(data);
-    closePanel();
-    showToast(`Mission "${data.name}" created!`, 'success');
-    renderMissionsGrid();
-    initDashboard();
+    try {
+      await addMission(data);
+      closePanel();
+      if (typeof showToast === 'function') showToast(`Mission "${data.name}" created!`, 'success');
+      renderMissionsGrid();
+      if (typeof initDashboard === 'function') initDashboard();
+    } catch (e) {
+      console.error(e);
+      if (typeof showToast === 'function') showToast("Failed to create mission", "error");
+    }
   });
 
-  // Char counter
   setTimeout(() => {
     const ta = document.querySelector('#add-mission-form [name="objective"]');
     const counter = document.getElementById('obj-counter');
@@ -132,61 +162,77 @@ function openAddMission() {
   }, 100);
 }
 
-function openEditMission(id) {
-  const m = getMission(id);
-  if (!m) return;
-  const formHTML = `
-    <form id="edit-mission-form">
-      <div class="form-group">
-        <label class="form-label">Status</label>
-        <select class="form-select" name="status">
-          <option value="planning" ${m.status==='planning'?'selected':''}>Planning</option>
-          <option value="active" ${m.status==='active'?'selected':''}>Active</option>
-          <option value="completed" ${m.status==='completed'?'selected':''}>Completed</option>
-          <option value="failed" ${m.status==='failed'?'selected':''}>Failed</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Progress (%)</label>
-        <input class="form-input form-range" type="range" name="progress" min="0" max="100" value="${m.progress}">
-        <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-primary);text-align:right" id="prog-val">${m.progress}%</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Priority</label>
-        <select class="form-select" name="priority">
-          <option value="low" ${m.priority==='low'?'selected':''}>Low</option>
-          <option value="medium" ${m.priority==='medium'?'selected':''}>Medium</option>
-          <option value="high" ${m.priority==='high'?'selected':''}>High</option>
-          <option value="critical" ${m.priority==='critical'?'selected':''}>Critical</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary btn-full">💾 SAVE CHANGES</button>
-    </form>`;
+// 2. ADDED ASYNC to Edit function
+async function openEditMission(id) {
+  try {
+    const mData = await getMission(id);
+    if (!mData) return;
+    const m = mData.data || mData;
 
-  openPanel(`Edit — ${m.name}`, formHTML, (formData) => {
-    const data = Object.fromEntries(formData);
-    data.progress = parseInt(data.progress);
-    updateMission(id, data);
-    closePanel();
-    showToast(`Mission "${m.name}" updated`, 'info');
-    renderMissionsGrid();
-  });
+    const formHTML = `
+      <form id="edit-mission-form">
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" name="status">
+            <option value="planning" ${m.status==='planning'?'selected':''}>Planning</option>
+            <option value="active" ${m.status==='active'?'selected':''}>Active</option>
+            <option value="completed" ${m.status==='completed'?'selected':''}>Completed</option>
+            <option value="failed" ${m.status==='failed'?'selected':''}>Failed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Progress (%)</label>
+          <input class="form-input form-range" type="range" name="progress" min="0" max="100" value="${m.progress || 0}">
+          <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-primary);text-align:right" id="prog-val">${m.progress || 0}%</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-select" name="priority">
+            <option value="low" ${m.priority==='low'?'selected':''}>Low</option>
+            <option value="medium" ${m.priority==='medium'?'selected':''}>Medium</option>
+            <option value="high" ${m.priority==='high'?'selected':''}>High</option>
+            <option value="critical" ${m.priority==='critical'?'selected':''}>Critical</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">💾 SAVE CHANGES</button>
+      </form>`;
 
-  setTimeout(() => {
-    const range = document.querySelector('#edit-mission-form [name="progress"]');
-    const val = document.getElementById('prog-val');
-    if (range && val) range.addEventListener('input', () => { val.textContent = range.value + '%'; });
-  }, 100);
+    openPanel(`Edit — ${m.name || 'Mission'}`, formHTML, async (formData) => {
+      const data = Object.fromEntries(formData);
+      data.progress = parseInt(data.progress);
+      await updateMission(id, data);
+      closePanel();
+      if (typeof showToast === 'function') showToast(`Mission updated`, 'info');
+      renderMissionsGrid();
+      if (typeof initDashboard === 'function') initDashboard();
+    });
+
+    setTimeout(() => {
+      const range = document.querySelector('#edit-mission-form [name="progress"]');
+      const val = document.getElementById('prog-val');
+      if (range && val) range.addEventListener('input', () => { val.textContent = range.value + '%'; });
+    }, 100);
+  } catch (error) {
+    console.error("Edit form load error:", error);
+  }
 }
 
-function deleteMissionAction(id) {
-  const m = getMission(id);
-  if (!m) return;
-  confirmAction(`Are you sure you want to delete mission <b>${m.name}</b>? This action cannot be undone.`, () => {
-    deleteMission(id);
-    showToast(`Mission "${m.name}" deleted`, 'warning');
-    renderMissionsGrid();
-  });
+// 3. ADDED ASYNC to Delete Action
+async function deleteMissionAction(id) {
+  try {
+    const mData = await getMission(id);
+    if (!mData) return;
+    const m = mData.data || mData;
+
+    confirmAction(`Are you sure you want to delete mission <b>${m.name || 'this mission'}</b>? This action cannot be undone.`, async () => {
+      await deleteMission(id);
+      if (typeof showToast === 'function') showToast(`Mission deleted`, 'warning');
+      renderMissionsGrid();
+      if (typeof initDashboard === 'function') initDashboard();
+    });
+  } catch (error) {
+    console.error("Delete action error:", error);
+  }
 }
 
 function stepChange(inputId, delta) {
